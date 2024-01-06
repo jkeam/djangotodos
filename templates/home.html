@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+  <h1 class="title">Welcome {{ user.first_name|default:user.username }}</h1>
+  <div class="box">
+    Check out your todos <a href="{% url 'todos:todo-view-list' %}">here</a>.
+  </div>
+{% else %}
+  <h1 class="title">Hello</h1>
+  <p>
+    You are not logged in.
+  </p>
+  <p class="pt-4">
+    <a class="button is-text" href="{% url 'login' %}">Log In</a>
+  </p>
+{% endif %}
+{% endblock %}

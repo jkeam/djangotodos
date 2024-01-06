@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="title">Delete Todo</h1>
+<form method="post">{% csrf_token %}
+  <p>Are you sure you want to delete Todo named <span class="has-text-weight-bold">{{ object.name }}</span>?</p>
+    {{ form }}
+    <div class="field is-grouped pt-2">
+      <div class="control">
+        <button type="submit" class="button is-danger">Confirm</button>
+      </div>
+    </div>
+</form>
+{% endblock %}

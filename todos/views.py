@@ -13,8 +13,8 @@ class TodoListView(LoginRequiredMixin, ListView):
 
 class TodoCreateView(LoginRequiredMixin, CreateView):
     model = Todo
-    success_url = '/todos/'
     form_class = TodoForm
+    success_url = reverse_lazy('todos:todo-view-list')
     def form_valid(self, form):
         f = form.instance
         f.owner = self.request.user
@@ -23,6 +23,7 @@ class TodoCreateView(LoginRequiredMixin, CreateView):
 class TodoUpdateView(LoginRequiredMixin, UpdateView):
     model = Todo
     form_class = TodoForm
+    success_url = reverse_lazy('todos:todo-view-list')
     def form_valid(self, form):
         f = form.instance
         f.owner = self.request.user

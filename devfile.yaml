@@ -33,7 +33,7 @@ components:
         - name: POSTGRESQL_DATABASE
           value: todos
       endpoints:
-        - name: db
+        - name: dbport
           exposure: none
           targetPort: 5432
   - name: adminer
@@ -47,7 +47,7 @@ components:
         - name: ADMINER_DESIGN
           value: nette
       endpoints:
-        - name: db
+        - name: adminerport
           exposure: public
           targetPort: 8080
           protocol: https

@@ -9,6 +9,8 @@
 1. Clone this repo
 2. `python3.12 -m venv venv && source ./venv/bin/activate`
 3. `pip install -r ./requirements.txt`
+4. `cp ./.env.template ./.env`
+5. Update values in `./.env`
 
 ### Application
 1. Migrate db

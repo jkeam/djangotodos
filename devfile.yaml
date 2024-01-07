@@ -34,8 +34,8 @@ components:
           targetPort: 8080
           protocol: https
   - name: db
-    deployByDefault: true
     openshift:
+      deployByDefault: true
       uri: ./kube/devspace/postgres.yaml
 
   - name: venv

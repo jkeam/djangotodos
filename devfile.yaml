@@ -1,4 +1,4 @@
-schemaVersion: 2.1.0
+schemaVersion: 2.2.0
 metadata:
   name: python-django
 components:
@@ -34,7 +34,8 @@ components:
           targetPort: 8080
           protocol: https
   - name: db
-    kubernetes:
+    deployByDefault: true
+    openshift:
       uri: ./kube/devspace/postgres.yaml
 
   - name: venv

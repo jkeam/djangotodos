@@ -34,9 +34,23 @@ components:
           targetPort: 8080
           protocol: https
   - name: db
-    openshift:
-      deployByDefault: true
-      uri: ./kube/devspace/postgres.yaml
+    container:
+      image: registry.redhat.io/rhel9/postgresql-15:latest
+      memoryLimit: 512Mi
+      cpuLimit: 500m
+      env:
+        - name: POSTGRESQL_USER
+          value: todouser
+        - name: POSTGRESQL_PASSWORD
+          value: todopassword
+        - name: POSTGRESQL_ADMIN_PASSWORD
+          value: adminpassword
+        - name: POSTGRESQL_DATABASE
+          value: todos
+      endpoints:
+        - name: dbport
+          exposure: none
+          targetPort: 5432
 
   - name: venv
     volume:

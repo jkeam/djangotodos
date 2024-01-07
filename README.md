@@ -21,7 +21,7 @@
 7. Run Migrate - cmd + shift + p -> Tasks: Run Task -> devfile -> Migrate
 8. Run Create user - cmd + shift + p -> Tasks: Run Task -> devfile -> Create user
 9. Run app - cmd + shift + d -> Click play button near 'RUN AND DEBUG'.  When prompted to open a new tab, click Open In New Tab -> Click Open.  If you get an error page, wait a second and refresh your browser -- the app is probably not ready yet.
-10. Log into app with 'admin' and 'password'
+10. Log into app with 'admin' and 'password1'
 11. Click stop button near top when done
 
 #### Run/Debug Tests

@@ -84,6 +84,15 @@ commands:
       group:
         kind: build
 
+  - id: create-user
+    exec:
+      label: "Create user"
+      component: tools
+      workingDir: ${PROJECT_SOURCE}
+      commandLine: ". .venv/bin/activate && DJANGO_SUPERUSER_PASSWORD=password1 python3 manage.py createsuperuser --username admin --email admin@example.com --noinput"
+      group:
+        kind: build
+
   - id: test
     exec:
       label: "Test"

@@ -1,7 +1,6 @@
 {
     "recommendations": [
         "ms-python.python",
-        "vscodevim.vim",
         "pr1sm8.theme-panda"
     ]
 }

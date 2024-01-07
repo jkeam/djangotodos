@@ -8,17 +8,21 @@ items:
       labels:
         app: db
     spec:
+      selector:
+        matchLabels:
+          app: db
       template:
         metadata:
-          name: db
-          app:
-            name: db
+          labels:
+            app: db
         spec:
           containers:
             - image: registry.redhat.io/rhel9/postgresql-15:latest
               name: postgres
-              memoryLimit: 512Mi
-              cpuLimit: 500m
+              resources:
+                limits:
+                  memory: 512Mi
+                  cpu: 500m
               env:
                 - name: POSTGRESQL_USER
                   value: todouser
@@ -31,9 +35,9 @@ items:
               ports:
                 - name: postgres-port
                   containerPort: 5432
-                  volumeMounts:
-                    - name: pg-storage
-                      mountPath: /var/lib/pgsql/data
+              volumeMounts:
+                - name: pg-storage
+                  mountPath: /var/lib/pgsql/data
           volumes:
             - name: pg-storage
               persistentVolumeClaim:
@@ -44,17 +48,20 @@ items:
       name: db
       labels:
         app: db
-        name: db
     spec:
+      selector:
+        app: db
       ports:
-        - port: 5432
-          targetPort: 5432
+        - name: db-service-port
+          port: 5432
+          targetPort: postgres-port
+          protocol: TCP
   - apiVersion: v1
     kind: PersistentVolumeClaim
     metadata:
       name: pg-storage
       labels:
-        app: postgres
+        app: db
     spec:
       accessModes:
         - ReadWriteOnce

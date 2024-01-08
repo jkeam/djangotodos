@@ -99,11 +99,11 @@ Make sure you are in the namespace/project you want this deployed to.
 
     ```shell
     # labels
-    oc label deployments/djangotodos app.kubernetes.io/part-of=djangotodos
+    oc label deployments/djangotodos app.kubernetes.io/part-of=django-todo-app
     oc label deployments/djangotodos app.openshift.io/runtime=python
     oc label deployments/djangotodos app.openshift.io/runtime-version=3.12
     oc label deployments/djangotodos app.kubernetes.io/name=djangotodos
-    oc label deployments/db app.kubernetes.io/part-of=djangotodos
+    oc label deployments/db app.kubernetes.io/part-of=django-todo-app
     oc label deployments/db app.openshift.io/runtime=postgresql
     oc label deployments/db app.openshift.io/runtime-version=15
     oc label deployments/db app.kubernetes.io/name=db

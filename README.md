@@ -4,6 +4,10 @@
 
 ### Dev Spaces
 
+#### GitHub Access
+1. Generate a PAT for your GitHub Repo.  Make sure to give access to commit and clone the repo
+2. Navigate to `https://<openshift_dev_spaces_fqdn>/dashboard/#/user-preferences?tab=personal-access-tokens` and add the PAT
+
 #### Run/Debug App
 1. Open a Dev Space with url `https://github.com/jkeam/djangotodos.git`
 2. Install extensions - cmd + shift + x -> Open the RECOMMENDED section and install all extensions

@@ -26,3 +26,19 @@ spec:
     env:
     - name: PYTHONDONTWRITEBYTECODE
       value: "1"
+    - name: DEBUG
+      value: "True"
+    - name: SECRET_KEY
+      value: "django-insecure-#zd522dfd9)ce1j4*-lj%t@r$syze#@+$(9j89td=@+t8d)!k+"
+    - name: DB_NAME
+      value: "todos"
+    - name: DB_USER
+      value: "postgres"
+    - name: DB_PASSWORD
+      value: "adminpassword"
+    - name: DB_HOST
+      value: "db"
+    - name: DB_PORT
+      value: "5432"
+    - name: ALLOWED_HOSTS
+      value: "*"

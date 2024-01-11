@@ -119,6 +119,39 @@ Make sure you are in the namespace/project you want this deployed to.
     echo "https://$(oc get routes/djangotodos -o jsonpath='{.spec.host}')"
     ```
 
+## OpenShift Pipeline
+
+```shell
+# setup
+oc new-project jkeam-pipeline
+oc new-project jkeam-dev
+oc policy add-role-to-user edit system:serviceaccount:jkeam-pipeline:pipeline -n jkeam-dev
+oc policy add-role-to-user system:image-puller system:serviceaccount:jkeam-dev:default -n jkeam-pipeline
+
+# db for pipeline
+oc new-app --name db \
+      --env POSTGRESQL_USER=todouser \
+      --env POSTGRESQL_PASSWORD=todopassword \
+      --env POSTGRESQL_ADMIN_PASSWORD=adminpassword \
+      --env POSTGRESQL_DATABASE=todos \
+      --image registry.redhat.io/rhel9/postgresql-15@sha256:802c7926383f9e4b31ac48dd42e5b7cce920c8ef09920abe2724e50a84fbea0b \
+      --namespace jkeam-pipeline
+
+# db for dev
+oc new-app --name db \
+      --env POSTGRESQL_USER=todouser \
+      --env POSTGRESQL_PASSWORD=todopassword \
+      --env POSTGRESQL_ADMIN_PASSWORD=adminpassword \
+      --env POSTGRESQL_DATABASE=todos \
+      --image registry.redhat.io/rhel9/postgresql-15@sha256:802c7926383f9e4b31ac48dd42e5b7cce920c8ef09920abe2724e50a84fbea0b \
+      --namespace jkeam-dev
+
+# pipeline
+oc create -f ./pipeline/django-test-task.yaml -n jkeam-pipeline
+oc create -f ./pipeline/pipeline.yaml -n jkeam-pipeline
+oc create -f ./pipeline/pipeline-run.yaml -n jkeam-pipeline
+```
+
 ## Local
 
 ### Prerequisite

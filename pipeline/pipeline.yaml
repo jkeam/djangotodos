@@ -1,0 +1,79 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: djangotodo-build
+spec:
+  params:
+    - name: APP_SOURCE_GIT
+      type: string
+      description: The application git repository
+    - name: APP_SOURCE_REVISION
+      type: string
+      description: The application git branch or sha hash
+      default: main
+    - name: APP_NAME
+      type: string
+      description: The application name
+      default: djangotodo
+    - name: DOCKERFILE
+      type: string
+      description: Dockerfile location
+      default: Dockerfile
+    - name: DEV_PROJECT
+      type: string
+      description: Project name for dev
+  results:
+    - name: APP_IMAGE_DIGEST
+      description: The image digest built in the pipeline
+      value: $(tasks.build-image.results.IMAGE_DIGEST)
+  workspaces:
+  - name: workspace
+  tasks:
+  - name: source-clone
+    taskRef:
+      name: git-clone
+      kind: ClusterTask
+    workspaces:
+    - name: output
+      workspace: workspace
+    params:
+    - name: url
+      value: $(params.APP_SOURCE_GIT)
+    - name: revision
+      value: $(params.APP_SOURCE_REVISION)
+  - name: unit-tests
+    taskRef:
+      name: django-test
+    runAfter:
+      - source-clone
+    workspaces:
+    - name: source
+      workspace: workspace
+  - name: build-image
+    taskRef:
+      name: buildah
+      kind: ClusterTask
+    runAfter:
+      - unit-tests
+    params:
+    - name: IMAGE
+      value: image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/$(params.APP_NAME)
+    - name: DOCKERFILE
+      value: "$(params.DOCKERFILE)"
+    workspaces:
+    - name: source
+      workspace: workspace
+  - name: deploy-dev
+    runAfter:
+      - build-image
+    taskRef:
+      name: openshift-client
+      kind: ClusterTask
+    workspaces:
+      - name: manifest-dir
+        workspace: workspace
+    params:
+      - name: SCRIPT
+        value: |
+          cat pipeline/deploy.yaml | sed "s/IMAGE/image-registry.openshift-image-registry.svc:5000\/$(context.pipelineRun.namespace)\/$(params.APP_NAME)@$(tasks.build-image.results.IMAGE_DIGEST)/" > deployment.yaml
+          oc apply --filename ./deployment.yaml -n $(params.DEV_PROJECT)

@@ -1,0 +1,28 @@
+apiVersion: tekton.dev/v1beta1
+kind: ClusterTask
+metadata:
+  name: django-test
+  labels:
+    app.kubernetes.io/version: "0.3"
+  annotations:
+    tekton.dev/pipelines.minVersion: "0.12.1"
+    tekton.dev/categories: Build Tools
+    tekton.dev/tags: build-tool
+    tekton.dev/displayName: "django test"
+    tekton.dev/platforms: "linux/amd64,linux/s390x,linux/ppc64le"
+spec:
+  description: This task runs Django tests.
+  workspaces:
+  - name: source
+  steps:
+  - name: build
+    image: registry.access.redhat.com/ubi9/python-311@sha256:8a067206cbdbf73a39261f11c028a6fa55369d44b6c08f3d5f4d5194bfad69a5
+    workingDir: $(workspaces.source.path)
+    script: |
+      python3 -m venv venv
+      source ./venv/bin/activate
+      pip install -r ./requirements.txt
+      python ./manage.py test
+    env:
+    - name: PYTHONDONTWRITEBYTECODE
+      value: "1"

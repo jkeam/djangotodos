@@ -1,0 +1,23 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: djangotodo-build-
+spec:
+  serviceAccountName: 'pipeline'
+  pipelineRef:
+    name: djangotodo-build
+  params:
+    - name: APP_SOURCE_GIT
+      value: https://github.com/jkeam/djangotodo
+    - name: DEV_PROJECT
+      value: jkeam-dev
+  workspaces:
+  - name: workspace
+    volumeClaimTemplate:
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 5Gi
+        volumeMode: Filesystem

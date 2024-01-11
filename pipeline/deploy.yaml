@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: djangotodo
+  labels:
+    app: djangotodo
+spec:
+  selector:
+    matchLabels:
+      app: djangotodo
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: djangotodo
+    spec:
+      containers:
+        - image: IMAGE
+          name: djangotodo
+          ports:
+          - containerPort: 8080
+            name: theport
+      restartPolicy: Always
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: djangotodo
+  labels:
+    app: djangotodo
+spec:
+  ports:
+    - name: port8000
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: djangotodo
+  type: LoadBalancer
+
+---
+
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: djangotodo
+  labels:
+    app: djangotodo
+spec:
+  path: /
+  to:
+    kind: Service
+    name: djangotodo
+    weight: 100
+  port:
+    targetPort: port8000

@@ -1,14 +1,14 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  generateName: djangotodo-build-
+  generateName: djangotodos-build-
 spec:
   serviceAccountName: 'pipeline'
   pipelineRef:
-    name: djangotodo-build
+    name: djangotodos-build
   params:
     - name: APP_SOURCE_GIT
-      value: https://github.com/jkeam/djangotodo
+      value: https://github.com/jkeam/djangotodos
     - name: DEV_PROJECT
       value: jkeam-dev
   workspaces:

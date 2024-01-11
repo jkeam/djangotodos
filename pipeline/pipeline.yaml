@@ -44,6 +44,7 @@ spec:
   - name: unit-tests
     taskRef:
       name: django-test
+      kind: ClusterTask
     runAfter:
       - source-clone
     workspaces:

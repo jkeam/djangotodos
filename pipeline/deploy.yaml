@@ -40,6 +40,8 @@ spec:
           ports:
           - containerPort: 8080
             name: theport
+          command: ["/bin/sh"]
+          args: ["-c", "python ./manage.py migrate && python ./manage.py runserver 0.0.0.0:8000"]
       restartPolicy: Always
 
 ---

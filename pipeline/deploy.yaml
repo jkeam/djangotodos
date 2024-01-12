@@ -77,3 +77,5 @@ spec:
     weight: 100
   port:
     targetPort: port8000
+  tls:
+    termination: edge

@@ -12,6 +12,39 @@ metadata:
     tekton.dev/platforms: "linux/amd64,linux/s390x,linux/ppc64le"
 spec:
   description: This task runs Django tests.
+  params:
+  - name: DEBUG
+    type: string
+    description: Debug flag
+    default: "True"
+  - name: SECRET_KEY
+    type: string
+    description: Secret key
+    value: "django-insecure-#zd522dfd9)ce1j4*-lj%t@r$syze#@+$(9j89td=@+t8d)!k+"
+  - name: DB_NAME
+    type: string
+    description: Database name
+    value: "todos"
+  - name: DB_USER
+    type: string
+    description: Database username
+    value: "postgres"
+  - name: DB_PASSWORD
+    type: string
+    description: Database password
+    value: "adminpassword"
+  - name: DB_HOST
+    type: string
+    description: Database host
+    value: "db"
+  - name: DB_PORT
+    type: string
+    description: Database port
+    value: "5432"
+  - name: ALLOWED_HOSTS
+    type: string
+    description: Allowed hosts
+    value: "*"
   workspaces:
   - name: source
   steps:
@@ -27,18 +60,18 @@ spec:
     - name: PYTHONDONTWRITEBYTECODE
       value: "1"
     - name: DEBUG
-      value: "True"
+      value: "$(params.DEBUG)"
     - name: SECRET_KEY
-      value: "django-insecure-#zd522dfd9)ce1j4*-lj%t@r$syze#@+$(9j89td=@+t8d)!k+"
+      value: "$(params.SECRET_KEY)"
     - name: DB_NAME
-      value: "todos"
+      value: "$(params.DB_NAME)"
     - name: DB_USER
-      value: "postgres"
+      value: "$(params.DB_USER)"
     - name: DB_PASSWORD
-      value: "adminpassword"
+      value: "$(params.DB_PASSWORD)"
     - name: DB_HOST
-      value: "db"
+      value: "$(params.DB_HOST)"
     - name: DB_PORT
-      value: "5432"
+      value: "$(params.DB_PORT)"
     - name: ALLOWED_HOSTS
-      value: "*"
+      value: "$(params.ALLOWED_HOSTS)"

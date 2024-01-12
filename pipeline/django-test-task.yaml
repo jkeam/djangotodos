@@ -20,31 +20,31 @@ spec:
   - name: SECRET_KEY
     type: string
     description: Secret key
-    value: "django-insecure-#zd522dfd9)ce1j4*-lj%t@r$syze#@+$(9j89td=@+t8d)!k+"
+    default: "django-insecure-#zd522dfd9)ce1j4*-lj%t@r$syze#@+$(9j89td=@+t8d)!k+"
   - name: DB_NAME
     type: string
     description: Database name
-    value: "todos"
+    default: "todos"
   - name: DB_USER
     type: string
     description: Database username
-    value: "postgres"
+    default: "postgres"
   - name: DB_PASSWORD
     type: string
     description: Database password
-    value: "adminpassword"
+    default: "adminpassword"
   - name: DB_HOST
     type: string
     description: Database host
-    value: "db"
+    default: "db"
   - name: DB_PORT
     type: string
     description: Database port
-    value: "5432"
+    default: "5432"
   - name: ALLOWED_HOSTS
     type: string
     description: Allowed hosts
-    value: "*"
+    default: "*"
   workspaces:
   - name: source
   steps:

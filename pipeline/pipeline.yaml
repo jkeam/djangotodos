@@ -22,6 +22,38 @@ spec:
     - name: DEV_PROJECT
       type: string
       description: Project name for dev
+    - name: DEBUG
+      type: string
+      description: Debug flag
+      default: "True"
+    - name: SECRET_KEY
+      type: string
+      description: Secret key
+      default: "django-insecure-#zd522dfd9)ce1j4*-lj%t@r$syze#@+$(9j89td=@+t8d)!k+"
+    - name: DB_NAME
+      type: string
+      description: Database name
+      default: "todos"
+    - name: DB_USER
+      type: string
+      description: Database username
+      default: "postgres"
+    - name: DB_PASSWORD
+      type: string
+      description: Database password
+      default: "adminpassword"
+    - name: DB_HOST
+      type: string
+      description: Database host
+      default: "db"
+    - name: DB_PORT
+      type: string
+      description: Database port
+      default: "5432"
+    - name: ALLOWED_HOSTS
+      type: string
+      description: Allowed hosts
+      default: "*"
   results:
     - name: APP_IMAGE_DIGEST
       description: The image digest built in the pipeline
@@ -50,6 +82,23 @@ spec:
     workspaces:
     - name: source
       workspace: workspace
+    params:
+    - name: DEBUG
+      value: "$(params.DEBUG)"
+    - name: SECRET_KEY
+      value: "$(params.SECRET_KEY)"
+    - name: DB_NAME
+      value: "$(params.DB_NAME)"
+    - name: DB_USER
+      value: "$(params.DB_USER)"
+    - name: DB_PASSWORD
+      value: "$(params.DB_PASSWORD)"
+    - name: DB_HOST
+      value: "$(params.DB_HOST)"
+    - name: DB_PORT
+      value: "$(params.DB_PORT)"
+    - name: ALLOWED_HOSTS
+      value: "$(params.ALLOWED_HOSTS)"
   - name: build-image
     taskRef:
       name: buildah

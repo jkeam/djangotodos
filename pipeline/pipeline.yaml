@@ -54,6 +54,12 @@ spec:
       type: string
       description: Allowed hosts
       default: "*"
+    - name: FROM_EMAIL
+      type: string
+      description: Email that will send build status
+    - name: TO_EMAILS
+      type: string
+      description: Comma delimited list of recipients of build status
   results:
     - name: APP_IMAGE_DIGEST
       description: The image digest built in the pipeline
@@ -73,7 +79,7 @@ spec:
       value: $(params.APP_SOURCE_GIT)
     - name: revision
       value: $(params.APP_SOURCE_REVISION)
-  - name: unit-tests
+  - name: run-tests
     taskRef:
       name: django-test
       kind: ClusterTask
@@ -104,7 +110,7 @@ spec:
       name: buildah
       kind: ClusterTask
     runAfter:
-      - unit-tests
+      - run-tests
     params:
     - name: IMAGE
       value: image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/$(params.APP_NAME)
@@ -127,3 +133,25 @@ spec:
         value: |
           cat pipeline/deploy.yaml | sed "s/IMAGE/image-registry.openshift-image-registry.svc:5000\/$(context.pipelineRun.namespace)\/$(params.APP_NAME)@$(tasks.build-image.results.IMAGE_DIGEST)/" > deployment.yaml
           oc apply --filename ./deployment.yaml -n $(params.DEV_PROJECT)
+  finally:
+  - name: sendmail
+    params:
+      - name: server
+        value: email-server-secret
+      - name: subject
+        value: "Build $(tasks.status) -> PL: $(context.pipeline.name), PLR: $(context.pipelineRun.name)"
+      - name: body
+        value: "$(tasks.build-image.results.IMAGE_DIGEST)"
+        value: |
+          App: $(context.pipelineRun.namespace)/$(params.APP_NAME)
+          Pipeline: $(context.pipeline.name)
+          PipelineRun: $(context.pipelineRun.name)
+          PipelineRun UID: $(context.pipelineRun.uid)
+          Image Digest: $(tasks.build-image.results.IMAGE_DIGEST)
+      - name: sender
+        value: "$(params.FROM_EMAIL)"
+      - name: recipients
+        value: "$(params.TO_EMAILS)"
+    taskRef:
+      kind: Task
+      name: sendmail

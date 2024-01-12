@@ -146,6 +146,9 @@ oc new-app --name db \
       --image registry.redhat.io/rhel9/postgresql-15@sha256:802c7926383f9e4b31ac48dd42e5b7cce920c8ef09920abe2724e50a84fbea0b \
       --namespace jkeam-dev
 
+# pipeline secret, update values with real
+oc create -f ./pipeline/email-server-secret.yaml
+
 # pipeline
 oc create -f ./pipeline/django-test-task.yaml -n jkeam-pipeline
 oc create -f ./pipeline/pipeline.yaml -n jkeam-pipeline

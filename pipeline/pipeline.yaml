@@ -139,10 +139,11 @@ spec:
       - name: server
         value: email-server-secret
       - name: subject
-        value: "Build $(tasks.status) -> PL: $(context.pipeline.name), PLR: $(context.pipelineRun.name)"
+        value: "Build $(tasks.status) for $(context.pipelineRun.name)"
       - name: body
         value: "$(tasks.build-image.results.IMAGE_DIGEST)"
         value: |
+          Status: $(tasks.status)
           App: $(context.pipelineRun.namespace)/$(params.APP_NAME)
           Pipeline: $(context.pipeline.name)
           PipelineRun: $(context.pipelineRun.name)

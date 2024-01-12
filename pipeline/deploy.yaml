@@ -38,7 +38,7 @@ spec:
           - name: ALLOWED_HOSTS
             value: "*"
           ports:
-          - containerPort: 8080
+          - containerPort: 8000
             name: theport
           command: ["/bin/sh"]
           args: ["-c", "python ./manage.py migrate && python ./manage.py runserver 0.0.0.0:8000"]
@@ -55,8 +55,8 @@ metadata:
 spec:
   ports:
     - name: port8000
-      port: 8080
-      targetPort: 8080
+      port: 8000
+      targetPort: 8000
   selector:
     app: djangotodos
   type: LoadBalancer

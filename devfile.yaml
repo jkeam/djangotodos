@@ -21,7 +21,7 @@ components:
   - name: adminer
     container:
       image: docker.io/adminer:latest
-      memoryLimit: 512Mi
+      memoryLimit: 1Gi
       cpuLimit: 500m
       env:
         - name: ADMINER_DEFAULT_SERVER

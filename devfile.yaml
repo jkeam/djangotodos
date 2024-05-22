@@ -20,8 +20,8 @@ components:
       mountSources: true
   - name: adminer
     container:
-      image: docker.io/adminer:latest
-      memoryLimit: 1Gi
+      image: docker.io/adminer:4.7.9
+      memoryLimit: 512Mi
       cpuLimit: 500m
       env:
         - name: ADMINER_DEFAULT_SERVER

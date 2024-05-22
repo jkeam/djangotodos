@@ -20,7 +20,7 @@ components:
       mountSources: true
   - name: adminer
     container:
-      image: quay.io/official-images/adminer:latest
+      image: docker.io/adminer:latest
       memoryLimit: 512Mi
       cpuLimit: 500m
       env:

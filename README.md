@@ -182,3 +182,9 @@ oc create -f ./pipeline/pipeline-run.yaml -n jkeam-pipeline
     ```shell
     cat create_user.py | python ./manage.py shell
     ```
+
+## Docs
+
+1. [Django Packages](https://djangopackages.org)
+2. [Class-Based View Docs](https://ccbv.co.uk/)
+3. [Django Docs](https://docs.djangoproject.com/en/5.0/)

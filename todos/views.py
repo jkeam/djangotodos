@@ -1,6 +1,6 @@
 from .models import Todo
 from .forms import TodoForm
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -16,17 +16,20 @@ class TodoCreateView(LoginRequiredMixin, CreateView):
     form_class = TodoForm
     success_url = reverse_lazy('todos:todo-view-list')
     def form_valid(self, form):
-        f = form.instance
-        f.owner = self.request.user
+        form.instance.owner = self.request.user
         return super().form_valid(form)
 
 class TodoUpdateView(LoginRequiredMixin, UpdateView):
     model = Todo
     form_class = TodoForm
     success_url = reverse_lazy('todos:todo-view-list')
+    def get_object(self, *args, **kwargs):
+        obj = super(TodoUpdateView, self).get_object(*args, **kwargs)
+        if not obj.owner == self.request.user:
+            raise Http404
+        return obj
     def form_valid(self, form):
-        f = form.instance
-        f.owner = self.request.user
+        form.instance.owner = self.request.user
         return super().form_valid(form)
 
 class TodoDeleteView(LoginRequiredMixin, DeleteView):

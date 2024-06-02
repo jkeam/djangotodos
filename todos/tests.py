@@ -29,6 +29,17 @@ def create_test_user():
     for user in users:
         create_user(user)
 
+def create_second_test_user():
+    users = [{
+        'username': 'foo2',
+        'password': 'bar2',
+        'first_name': 'Foo2',
+        'last_name': 'Bar2',
+        'email': 'foo2@example.com',
+        }]
+    for user in users:
+        create_user(user)
+
 def get_user():
     """ Get user """
     UserModel = get_user_model()
@@ -125,3 +136,21 @@ class TodoToggleViewTests(TestCase):
         self.assertEqual(Todo.objects.all().first().completed, True)
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, redirect_url)
+
+class TodoOtherUserTodoViewTests(TestCase):
+    def setUp(self):
+        self.user = create_test_user()
+        self.user2 = create_second_test_user()
+        self.client.login(username='foo', password='bar')
+        self.todo = create_todo_for_test_user('test-toggle')
+
+    def test_other_view(self):
+        """
+        Toggle completion
+        """
+        url = reverse("todos:todo-update", args=(self.todo.id,))
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.client.login(username='foo2', password='bar2')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)

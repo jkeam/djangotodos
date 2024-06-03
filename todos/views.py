@@ -8,30 +8,32 @@ from django.shortcuts import render
 
 class HorizonListView(LoginRequiredMixin, ListView):
     model = Todo
-    paginate_by = 10
+    paginate_by = 100
     template_name_suffix = '_horizon_list'
     def get_queryset(self):
         return Todo.objects.filter(owner=self.request.user)
 
-def horizon_detail(request, pk):
-    if not request.user.is_authenticated:
-        return HttpResponseRedirect("/")
-    if request.method == 'GET':
-        horizon = 'AC'
-        todos = []
-        if Todo.valid_horizon(pk):
-            horizon = pk
-            todos = Todo.objects.filter(owner=request.user, horizon=horizon)
-        context = {
-            "page_obj": todos,
-            "horizon": horizon,
-            "horizon_name": Todo.horizon_value_to_name(horizon),
-        }
-    return render(request, "todos/todo_horizon_detail.html", context)
+class HorizonDetailListView(LoginRequiredMixin, ListView):
+    model = Todo
+    paginate_by = 100
+    template_name_suffix = '_horizon_detail'
+    def get_queryset(self):
+        horizon = self.request.path.replace('/todos/horizons/', '')
+        if not Todo.valid_horizon(horizon):
+            horizon = 'AC'
+        return Todo.objects.filter(owner=self.request.user, horizon=horizon)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        horizon = self.request.path.replace('/todos/horizons/', '')
+        if not Todo.valid_horizon(horizon):
+            horizon = 'AC'
+        context["horizon"] = horizon
+        context["horizon_name"] = Todo.horizon_value_to_name(horizon)
+        return context
 
 class TodoListView(LoginRequiredMixin, ListView):
     model = Todo
-    paginate_by = 10
+    paginate_by = 100
     def get_queryset(self):
         return Todo.objects.filter(owner=self.request.user)
 

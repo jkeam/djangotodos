@@ -1,5 +1,5 @@
 from .models import Todo
-from .forms import TodoForm
+from .forms import TodoForm, TodoChildrenForm
 from django.http import HttpResponseRedirect, Http404
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
@@ -31,12 +31,6 @@ class HorizonDetailListView(LoginRequiredMixin, ListView):
         context["horizon_name"] = Todo.horizon_value_to_name(horizon)
         return context
 
-class TodoListView(LoginRequiredMixin, ListView):
-    model = Todo
-    paginate_by = 100
-    def get_queryset(self):
-        return Todo.objects.filter(owner=self.request.user)
-
 class TodoCreateView(LoginRequiredMixin, CreateView):
     model = Todo
     form_class = TodoForm
@@ -67,9 +61,34 @@ class TodoUpdateView(LoginRequiredMixin, UpdateView):
         form.instance.owner = self.request.user
         return super().form_valid(form)
 
+class TodoUpdateChildren(LoginRequiredMixin, UpdateView):
+    model = Todo
+    form_class = TodoChildrenForm
+    def get_success_url(self):
+        return reverse('todos:horizon-detail-list', kwargs={"pk": self.object.horizon})
+    def get_object(self, *args, **kwargs):
+        obj = super(TodoUpdateChildren, self).get_object(*args, **kwargs)
+        if not obj.owner == self.request.user:
+            raise Http404
+        return obj
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
+    def get_form_kwargs(self):
+        kwargs = super(TodoUpdateChildren, self).get_form_kwargs()
+        kwargs['horizon'] = self.object.horizon
+        kwargs['request'] = self.request
+        return kwargs
+
 class TodoDeleteView(LoginRequiredMixin, DeleteView):
     model = Todo
-    success_url = reverse_lazy('todos:todo-view-list')
+    def get_success_url(self):
+        return reverse('todos:horizon-detail-list', kwargs={"pk": self.object.horizon})
+
+def goto_horizon(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect("/")
+    return HttpResponseRedirect(reverse('todos:horizon-view-list'))
 
 def todo_toggle(request, pk):
     if not request.user.is_authenticated:

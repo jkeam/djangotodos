@@ -59,12 +59,8 @@ class TodoIndexViewTests(TestCase):
         self.todo = create_todo_for_test_user('test-index')
 
     def test_index(self):
-        """
-        List todos
-        """
-        response = self.client.get(reverse("todos:todo-view-list"))
+        response = self.client.get(reverse("todos:horizon-view-list"))
         self.assertEqual(response.status_code, 200)
-        self.assertQuerySetEqual(response.context['object_list'], [self.todo])
 
 class TodoDetailViewTests(TestCase):
     def setUp(self):
@@ -112,7 +108,7 @@ class TodoDeleteViewTests(TestCase):
         """
         self.assertEqual(Todo.objects.all().count(), 1)
         url = reverse("todos:todo-delete", args=(self.todo.id,))
-        redirect_url = reverse("todos:todo-view-list")
+        redirect_url = reverse("todos:horizon-detail-list", kwargs={"pk": 'AC'})
         response = self.client.post(url)
         self.assertEqual(Todo.objects.all().count(), 0)
         self.assertEqual(response.status_code, 302)

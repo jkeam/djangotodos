@@ -42,6 +42,12 @@
           <a href="{% url 'todos:todo-update' todo.id %}" class="button is-text">
            Update
           </a>
+          {% if not horizon == 'AC' %}
+          |
+          <a href="{% url 'todos:todo-update-children' todo.id %}" class="button is-text">
+           Children
+          </a>
+          {% endif %}
           |
           <a href="{% url 'todos:todo-delete' todo.id %}" class="button is-text">
             Delete

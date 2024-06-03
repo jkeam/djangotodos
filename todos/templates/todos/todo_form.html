@@ -3,11 +3,10 @@
 
 <h1 class="title">
   {% if form.instance.id %}
-  Update
+  Update &quot;{{ form.instance.name }}&quot;
   {% else %}
-  New
+  New Entry
   {% endif %}
-  Entry
 </h1>
 
 <form method="post">

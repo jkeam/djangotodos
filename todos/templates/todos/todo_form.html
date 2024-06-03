@@ -7,7 +7,7 @@
   {% else %}
   New
   {% endif %}
-  Todo
+  Entry
 </h1>
 
 <form method="post">
@@ -15,7 +15,15 @@
     {% csrf_token %}
     <div class="field">
       <label class="label" for="{{ field.auto_id }}">{{ field.label }}</label>
-      <div class="control"> {{ field }} </div>
+      <div class="control">
+        {% if field.name == 'horizon' %}
+        <div class="select">
+          {{ field }}
+        </div>
+        {% else %}
+          {{ field }}
+        {% endif %}
+      </div>
       {% if field.errors %}
         <small class="error">{{ field.errors|striptags }}</small>
       {% endif %}
@@ -25,5 +33,9 @@
 </form>
 
 <br />
-<a href="{% url 'todos:todo-view-list' %}">Back</a>
+
+<a href="{% url 'todos:horizon-detail-list' form.instance.horizon %}">
+  Back
+</a>
+
 {% endblock %}

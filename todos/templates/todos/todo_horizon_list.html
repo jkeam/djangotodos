@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="title">Horizons</h1>
+
+<table class="table is-fullwidth is-hoverable is-striped">
+  <thead>
+    <tr>
+      <th>
+          Name
+      </th>
+      <th>
+          Description
+      </th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <a href="{% url 'todos:horizon-detail-list' 'AC' %}">
+          Actions
+        </a>
+      </td>
+      <td>
+        This is the ground floor – the huge volume of actions and information you currently have to do and to organize, including emails, calls, memos, errands, stuff to read, stuff to file, things to talk to staff about, etc. If you got no further input in your life, this would likely take you 300-500 hours to finish. Just getting a complete and current inventory of the next actions required at this level is quite a feat.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="{% url 'todos:horizon-detail-list' 'PR' %}">
+          Projects
+        </a>
+      </td>
+      <td>
+        This is the inventory of your projects – all the things that you have commitments to finish, that take more than one action step to complete.  These “open loops” are what create most of your actions. These projects include anything from “look into having a birthday party for Susan” to “buy Acme Brick Co.” Most people have between 30 and 100 of these. If you were to fully and accurately define this list, it would undoubtedly generate many more and different actions than you currently have identified.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="{% url 'todos:horizon-detail-list' 'FO' %}">
+          Areas of Focus and Accountability
+        </a>
+      </td>
+      <td>
+        What’s your job? Driving the creation of a lot of your projects are the four to seven major areas of responsibility that you at least implicitly are going to be held accountable to have done well, at the end of some time period, by yourself if not by someone else (e.g. boss.) With a clear and current evaluation of what those areas or responsibility are, and what you are (and are not) doing about them, there are likely new projects to be created, and old ones to be eliminated.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="{% url 'todos:horizon-detail-list' 'GO' %}">
+          One to Two Year Goals
+        </a>
+      </td>
+      <td>
+        Where is your job going? What will the role you’re in right now be looking like 12-18 months from now, based on your goals and on the directions of the changes at that level? We’ve met very few people who are doing only what they were hired to do.  These days, job descriptions are moving targets. You may be personally changing what you’re doing, given personal goals; and the job itself may need to look different, given the shifting nature of the work at the departmental or divisional level. Getting this level clear always creates some new projects and actions.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="{% url 'todos:horizon-detail-list' 'VI' %}">
+          Three to Five Year Vision
+        </a>
+      </td>
+      <td>
+        The goals and direction of the larger entity within which you operate heavily influence your job and your professional direction. Where is your company going to be, one to three years from now? How will that be affecting the scope and scale of your job, your department, and your division? What external factors (like technology) are influencing the changes? How is the definition and relationship with your customers going to be changing, etc.? Thinking at this level invariably surfaces some projects that need to be defined, and new action steps to move them forward.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="{% url 'todos:horizon-detail-list' 'PU' %}">
+          Purpose and Principles
+        </a>
+      </td>
+      <td>
+        What is the work you are here to do on the planet, with your life? This is the ultimate bigger picture discussion. Is this the job you want? Is this the lifestyle you want? Are you operating within the context of your real values, etc.? From an organizational perspective, this is the Purpose and Vision discussion. Why does it exist? No matter how organized you may get, if you are not spending enough time with your family, your health, your spiritual life, etc., you will still have “incompletes” to deal with, make decisions about, and have projects and actions about, to get completely clear.
+      </td>
+    </tr>
+  </tbody>
+</table>
+{% endblock %}

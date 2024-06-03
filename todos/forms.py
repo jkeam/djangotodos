@@ -1,5 +1,6 @@
 from django import forms
 from .models import Todo
+Horizon = Todo.Horizon
 
 class TodoForm(forms.ModelForm):
     name = forms.CharField(
@@ -20,6 +21,12 @@ class TodoForm(forms.ModelForm):
             attrs={'class': 'input', 'type': 'date'}
     ))
 
+    horizon = forms.ChoiceField(
+        choices=Horizon.choices,
+        required=False,
+        widget=forms.Select()
+    )
+
     class Meta:
         model = Todo
-        fields = ['name', 'description', 'due_date']
+        fields = ['name', 'description', 'due_date', 'horizon']

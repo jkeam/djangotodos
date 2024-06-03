@@ -19,6 +19,10 @@
         <div class="select">
           {{ field }}
         </div>
+        {% elif field.name == 'children' %}
+        <div class="checkbox">
+          {{ field }}
+        </div>
         {% else %}
           {{ field }}
         {% endif %}

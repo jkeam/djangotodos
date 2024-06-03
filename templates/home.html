@@ -5,7 +5,16 @@
 {% block content %}
 {% if user.is_authenticated %}
   <h1 class="title">Welcome {{ user.first_name|default:user.username }}</h1>
-  Check out your todos <a href="{% url 'todos:todo-view-list' %}">here</a>.
+  <p>
+    Get started by understanding
+    <strong>horizons</strong>
+    <a href="{% url 'todos:horizon-view-list' %}">
+      here.
+    </a>
+  </p>
+  <p>
+    Then click on a particular horizon to start creating some of your own.
+  </p>
 {% else %}
   <h1 class="title">Hello</h1>
   <p>

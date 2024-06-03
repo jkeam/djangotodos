@@ -1,10 +1,21 @@
 from .models import Todo
-from .forms import TodoForm, TodoChildrenForm
+from .forms import TodoForm, TodoChildrenForm, UserForm
 from django.http import HttpResponseRedirect, Http404
 from django.urls import reverse_lazy, reverse
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User
 from django.shortcuts import render
+
+class ProfileUpdateView(LoginRequiredMixin, UpdateView):
+    model = User
+    form_class = UserForm
+    success_url = reverse_lazy('todos:profile-detail')
+    def get_object(self, *args, **kwargs):
+        obj = self.request.user
+        if not obj == self.request.user:
+            raise Http404
+        return obj
 
 class HorizonListView(LoginRequiredMixin, ListView):
     model = Todo

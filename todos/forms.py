@@ -5,7 +5,7 @@ Horizon = Todo.Horizon
 
 class CustomChildren(forms.ModelMultipleChoiceField):
     def label_from_instance(self, todo):
-        return "%s" % todo.name
+        return f"{todo.name} - {todo.description}"
 
 class TodoChildrenForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -71,3 +71,24 @@ class TodoForm(forms.ModelForm):
     class Meta:
         model = Todo
         fields = ['name', 'description', 'due_date', 'horizon']
+
+
+class UserForm(forms.ModelForm):
+    username = forms.CharField(
+        widget=forms.TextInput(
+            attrs={'placeholder': 'Username', 'class': 'input'}
+    ))
+
+    first_name = forms.CharField(
+        widget=forms.TextInput(
+            attrs={'placeholder': 'First Name', 'class': 'input'}
+    ))
+
+    last_name = forms.CharField(
+        widget=forms.TextInput(
+            attrs={'placeholder': 'Last Name', 'class': 'input'}
+    ))
+
+    class Meta:
+        model = Todo
+        fields = ['username', 'first_name', 'last_name']

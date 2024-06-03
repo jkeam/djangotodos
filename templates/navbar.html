@@ -62,10 +62,9 @@
     <div class="navbar-end">
       <div class="navbar-item">
         <div class="buttons">
-          <form method="post" action="{% url 'logout' %}">
-            {% csrf_token %}
-            <button type="submit" class="button is-primary">Logout</button>
-          </form>
+          <a class="button is-primary" href="{% url 'todos:profile-detail' %}">
+            Profile
+          </a>
         </div>
       </div>
     </div>

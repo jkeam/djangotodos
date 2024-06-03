@@ -19,12 +19,43 @@
         Home
       </a>
 
-      <a class="navbar-item" href="{% url 'todos:horizon-view-list' %}">
-        Horizons
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link" href="{% url 'todos:horizon-view-list' %}">
+          Horizons
+        </a>
+
+        <div class="navbar-dropdown">
+          <a class="navbar-item" href="{% url 'todos:horizon-detail-list' 'AC' %}">
+            Actions
+          </a>
+          <a class="navbar-item" href="{% url 'todos:horizon-detail-list' 'PR' %}">
+            Projects
+          </a>
+          <a class="navbar-item" href="{% url 'todos:horizon-detail-list' 'FO' %}">
+            Focus
+          </a>
+          <a class="navbar-item" href="{% url 'todos:horizon-detail-list' 'GO' %}">
+            Goals
+          </a>
+          <a class="navbar-item" href="{% url 'todos:horizon-detail-list' 'VI' %}">
+            Visions
+          </a>
+          <a class="navbar-item" href="{% url 'todos:horizon-detail-list' 'PU' %}">
+            Purpose
+          </a>
+        </div>
+      </div>
+
+      <a class="navbar-item" href="{% url 'todos:horizon-detail-list' 'AC' %}">
+        Actions
       </a>
 
-      <a class="navbar-item" href="{% url 'todos:todo-view-list' %}">
-        Todos
+      <a class="navbar-item" href="{% url 'todos:horizon-detail-list' 'PR' %}">
+        Projects
+      </a>
+
+      <a class="navbar-item" href="{% url 'todos:horizon-detail-list' 'FO' %}">
+        Focus
       </a>
     </div>
 

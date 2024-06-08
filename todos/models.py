@@ -17,7 +17,7 @@ class Todo(models.Model):
         default=Horizon.ACTIONS,
     )
     name = models.CharField(max_length=32, null=False, blank=False)
-    description = models.TextField(default='', max_length=512,null=False, blank=True)
+    description = models.TextField(default='', max_length=512, null=False, blank=True)
     completed = models.BooleanField(default=False, null=False)
     due_date = models.DateField(null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=False)
@@ -47,3 +47,20 @@ class Todo(models.Model):
 
     class Meta:
         ordering = ["-id"]
+
+    def __str__(self):
+        return f"Todo {self.name} by {self.owner.username}"
+
+
+class TodoComment(models.Model):
+    body = models.TextField(default='', max_length=512, null=False, blank=False)
+    created_at = models.DateTimeField(auto_now_add=True, null=False)
+    updated_at = models.DateTimeField(auto_now=True, null=False)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
+    todo = models.ForeignKey(Todo, on_delete=models.CASCADE, null=False)
+
+    class Meta:
+        ordering = ["-id"]
+
+    def __str__(self):
+        return f"Comment by {self.owner.username} on {self.post.name}"

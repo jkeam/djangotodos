@@ -58,7 +58,6 @@
   </tbody>
 </table>
 
-
 <div class="pagination">
     <span class="step-links">
         {% if page_obj.has_previous %}
@@ -75,5 +74,11 @@
             <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
         {% endif %}
     </span>
+</div>
+
+<div>
+{% for todo in page_obj %}
+  {% include 'todos/card.html' with todo=todo %}
+{% endfor %}
 </div>
 {% endblock %}

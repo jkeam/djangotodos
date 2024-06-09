@@ -1,5 +1,5 @@
 from .models import Todo
-from .forms import TodoForm, TodoChildrenForm, UserForm
+from .forms import TodoForm, TodoChildrenForm, UserForm, TodoCommentForm
 from django.http import HttpResponseRedirect, Http404
 from django.urls import reverse_lazy, reverse
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
@@ -7,15 +7,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.shortcuts import render
 
-class ProfileUpdateView(LoginRequiredMixin, UpdateView):
-    model = User
-    form_class = UserForm
-    success_url = reverse_lazy('todos:profile-detail')
-    def get_object(self, *args, **kwargs):
-        obj = self.request.user
-        if not obj == self.request.user:
-            raise Http404
-        return obj
+def goto_horizon(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect("/")
+    return HttpResponseRedirect(reverse('todos:horizon-view-list'))
 
 class HorizonListView(LoginRequiredMixin, ListView):
     model = Todo
@@ -42,6 +37,16 @@ class HorizonDetailListView(LoginRequiredMixin, ListView):
         context["horizon_name"] = Todo.horizon_value_to_name(horizon)
         return context
 
+class ProfileUpdateView(LoginRequiredMixin, UpdateView):
+    model = User
+    form_class = UserForm
+    success_url = reverse_lazy('todos:profile-detail')
+    def get_object(self, *args, **kwargs):
+        obj = self.request.user
+        if not obj == self.request.user:
+            raise Http404
+        return obj
+
 class TodoCreateView(LoginRequiredMixin, CreateView):
     model = Todo
     form_class = TodoForm
@@ -58,6 +63,9 @@ class TodoCreateView(LoginRequiredMixin, CreateView):
         initial.update({ 'horizon': horizon })
         return initial
 
+class TodoView(LoginRequiredMixin, DetailView):
+    model = Todo
+
 class TodoUpdateView(LoginRequiredMixin, UpdateView):
     model = Todo
     form_class = TodoForm
@@ -71,6 +79,23 @@ class TodoUpdateView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         form.instance.owner = self.request.user
         return super().form_valid(form)
+
+def todo_toggle(request, pk):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect("/")
+    if request.method == 'POST':
+        todo = Todo.objects.get(pk=pk)
+        if not todo.owner == request.user:
+            raise Http404
+        todo.completed = not todo.completed
+        todo.save()
+        return HttpResponseRedirect(reverse('todos:horizon-detail-list', kwargs={"pk": todo.horizon}))
+    return HttpResponseRedirect(reverse('todos:horizon-view-list'))
+
+class TodoDeleteView(LoginRequiredMixin, DeleteView):
+    model = Todo
+    def get_success_url(self):
+        return reverse('todos:horizon-detail-list', kwargs={"pk": self.object.horizon})
 
 class TodoUpdateChildren(LoginRequiredMixin, UpdateView):
     model = Todo
@@ -91,24 +116,38 @@ class TodoUpdateChildren(LoginRequiredMixin, UpdateView):
         kwargs['request'] = self.request
         return kwargs
 
-class TodoDeleteView(LoginRequiredMixin, DeleteView):
-    model = Todo
-    def get_success_url(self):
-        return reverse('todos:horizon-detail-list', kwargs={"pk": self.object.horizon})
+# def comment_for_article(request, todo_id):
+#     if not request.user.is_authenticated:
+#         return HttpResponseRedirect("/")
+#     if request.method == 'POST':
+#         todo = get_object_or_404(Todo, id = todo_id, owner=request.user)
+#         comment = None
 
-def goto_horizon(request):
-    if not request.user.is_authenticated:
-        return HttpResponseRedirect("/")
-    return HttpResponseRedirect(reverse('todos:horizon-view-list'))
+#         form = TodoCommentForm(data=request.POST)
+#         if form.is_valid():
+#             comment = form.save(commit=False)
+#             comment.todo = todo
+#             comment.save()
+#         return HttpResponseRedirect(reverse('todos:todo-update', kwargs={"pk": todo.id}))
+#         # return HttpResponseRedirect(reverse('todos:horizon-detail-list', kwargs={"pk": self.object.horizon
+#         # return render(request, 'blog/comment.html', {'article': article, 'form': form, 'comment': comment})
+#     return HttpResponseRedirect(reverse('todos:horizon-view-list'))
 
-def todo_toggle(request, pk):
-    if not request.user.is_authenticated:
-        return HttpResponseRedirect("/")
-    if request.method == 'POST':
-        todo = Todo.objects.get(pk=pk)
-        if not todo.owner == request.user:
-            raise Http404
-        todo.completed = not todo.completed
-        todo.save()
-        return HttpResponseRedirect(reverse('todos:horizon-detail-list', kwargs={"pk": todo.horizon}))
-    return HttpResponseRedirect(reverse('todos:horizon-view-list'))
+# class TodoUpdateComments(LoginRequiredMixin, UpdateView):
+#     model = Todo
+#     form_class = TodoCommentForm
+#     def get_success_url(self):
+#         return reverse('todos:todo-update-comments', kwargs={"pk": self.object.horizon})
+#     def get_object(self, *args, **kwargs):
+#         obj = super(TodoUpdateComments, self).get_object(*args, **kwargs)
+#         if not obj.owner == self.request.user:
+#             raise Http404
+#         return obj
+#     def form_valid(self, form):
+#         form.instance.owner = self.request.user
+#         return super().form_valid(form)
+#     def get_form_kwargs(self):
+#         kwargs = super(TodoUpdateComments, self).get_form_kwargs()
+#         # kwargs['horizon'] = self.object.horizon
+#         # kwargs['request'] = self.request
+#         return kwargs

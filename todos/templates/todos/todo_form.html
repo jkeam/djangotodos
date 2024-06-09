@@ -37,8 +37,18 @@
 
 <br />
 
-<a href="{% url 'todos:horizon-detail-list' form.instance.horizon %}">
-  Back
-</a>
+<div class="field is-grouped">
+  <p class="control">
+    <a href="{% url 'todos:todo-view' object.id %}" class="button is-text">
+      View
+    </a>
+  </p>
+
+  <p class="control">
+    <a href="{% url 'todos:horizon-detail-list' form.instance.horizon %}" class="button is-text">
+      View All {{ form.instance.horizon_name }}
+    </a>
+  </p>
+</div>
 
 {% endblock %}

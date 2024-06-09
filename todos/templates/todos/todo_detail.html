@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1 class="title">
+  {{ object.name }}
+</h1>
+
+<h2 class="subtitle">
+  Horizon: {{ object.horizon_name }}
+</h2>
+
+<div class="block">
+  <strong>Description:</strong>
+  {{ object.description }}
+</div>
+
+<div class="block">
+  <strong>Completed:</strong>
+  {{ object.completed }}
+</div>
+
+<div class="block">
+  <strong>Due Date:</strong>
+  {{ object.due_date }}
+</div>
+
+<div class="block">
+  <strong>Created At:</strong>
+  {{ object.created_at }}
+</div>
+
+<div class="block">
+  <strong>Updated At:</strong>
+  {{ object.updated_at }}
+</div>
+
+{% if not object.horizon == 'AC' %}
+<div class="block">
+  <strong>Children:</strong>
+  <ul>
+  {% for child in object.children.all %}
+    <li>
+      {{ child.name }} - {{ child.description }}
+    </li>
+    {% empty %}
+    <strong>None</strong>
+  {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+<br />
+
+<div class="field is-grouped">
+  <p class="control">
+    <a href="{% url 'todos:todo-update' object.id %}" class="button is-text">
+      Update
+    </a>
+  </p>
+
+  <p class="control">
+    <a href="{% url 'todos:horizon-detail-list' object.horizon %}" class="button is-text">
+      View All {{ object.horizon_name }}
+    </a>
+  </p>
+</div>
+
+{% endblock %}

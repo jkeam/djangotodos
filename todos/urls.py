@@ -4,12 +4,17 @@ app_name = 'todos'
 from . import views
 urlpatterns = [
     path('', views.goto_horizon, name='root'),
+    # horizons
     path('horizons/', views.HorizonListView.as_view(), name='horizon-view-list'),
     path('horizons/<str:pk>', views.HorizonDetailListView.as_view(), name='horizon-detail-list'),
-    path('add/', views.TodoCreateView.as_view(), name='todo-add'),
+    # profiles
     path('profiles/', views.ProfileUpdateView.as_view(), name='profile-detail'),
-    path('<int:pk>/', views.TodoUpdateView.as_view(), name='todo-update'),
-    path('<int:pk>/children/', views.TodoUpdateChildren.as_view(), name='todo-update-children'),
-    path('<int:pk>/delete/', views.TodoDeleteView.as_view(), name='todo-delete'),
+    # todos
+    path('add/', views.TodoCreateView.as_view(), name='todo-add'),
+    path('<int:pk>/', views.TodoView.as_view(), name='todo-view'),
+    path('<int:pk>/update/', views.TodoUpdateView.as_view(), name='todo-update'),
     path('<int:pk>/toggle/', views.todo_toggle, name='todo-toggle'),
+    path('<int:pk>/delete/', views.TodoDeleteView.as_view(), name='todo-delete'),
+    path('<int:pk>/children/', views.TodoUpdateChildren.as_view(), name='todo-children'),
+    # path('<int:pk>/comments/', views.TodoUpdateComments.as_view(), name='todo-update-comments'),
 ]

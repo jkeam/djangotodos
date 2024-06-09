@@ -25,6 +25,9 @@ class Todo(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
     children = models.ManyToManyField("self")
 
+    def horizon_name(self) -> str:
+        return Todo.horizon_value_to_name(self.horizon)
+
     @staticmethod
     def valid_horizon(hor:str) -> bool:
         return hor in ["AC", "PR", "FO", "GO", "VI", "PU"]

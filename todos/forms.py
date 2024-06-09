@@ -3,6 +3,13 @@ from .models import Todo
 from django.utils.translation import gettext_lazy as _
 Horizon = Todo.Horizon
 
+class TodoCommentForm(forms.ModelForm):
+    body = forms.CharField(
+        required=True,
+        widget=forms.Textarea(
+            attrs={'placeholder': 'Comment', 'class': 'textarea'}
+    ))
+
 class CustomChildren(forms.ModelMultipleChoiceField):
     def label_from_instance(self, todo):
         return f"{todo.name} - {todo.description}"

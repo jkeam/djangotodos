@@ -25,7 +25,9 @@
     {% for todo in page_obj %}
       <tr>
         <td class="{% if todo.completed %} strikethrough {% endif %}">
-          {{ todo.name }}
+           <a href="{% url 'todos:todo-view' todo.id %}" class="">
+            {{ todo.name }}
+          </a>
         </td>
         <td class="{% if todo.completed %} strikethrough {% endif %}">
           {{ todo.description }}
@@ -44,7 +46,7 @@
           </a>
           {% if not horizon == 'AC' %}
           |
-          <a href="{% url 'todos:todo-update-children' todo.id %}" class="button is-text">
+          <a href="{% url 'todos:todo-children' todo.id %}" class="button is-text">
            Children
           </a>
           {% endif %}
@@ -76,9 +78,4 @@
     </span>
 </div>
 
-<div>
-{% for todo in page_obj %}
-  {% include 'todos/card.html' with todo=todo %}
-{% endfor %}
-</div>
 {% endblock %}

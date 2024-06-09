@@ -9,27 +9,35 @@
   Horizon: {{ todo.horizon_name }}
 </h2>
 
-<form action="{% url 'todos:todo-comments-add' todo.id %}" method="post">
-    {% csrf_token %}
-    <div class="field">
-      <label class="label" for="body">Body</label>
-      <div class="control">
-        <textarea id="body" name="body" class="textarea" placeholder="Comment"></textarea>
-      </div>
-    </div>
-    <div class="field is-grouped">
-      <div class="control">
-        <button type="submit" class="button is-primary">Submit</button>
-      </div>
-    </div>
-</form>
+<div x-data="{ open: false }">
+  <button x-on:click="open = ! open" class="button is-text mb-3">Add Comment</button>
 
+  <div x-show="open">
+    <form action="{% url 'todos:todo-comments-add' todo.id %}" method="post" class="mb-5">
+      {% csrf_token %}
+      <div class="field">
+        <label class="label" for="body">Comment</label>
+        <div class="control">
+          <textarea id="body" name="body" class="textarea" placeholder="Comment"></textarea>
+        </div>
+      </div>
+      <div class="field is-grouped">
+        <div class="control">
+          <button type="submit" class="button is-primary">Submit</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
 
 <table class="table is-fullwidth is-hoverable is-striped">
   <thead>
     <tr>
       <th>
           Comment
+      </th>
+      <th>
+          Created At
       </th>
       <th></th>
     </tr>
@@ -40,6 +48,9 @@
         <td class="">
           {{ comment.body }}
         </td>
+        <td class="">
+          {{ comment.created_at }}
+        </td>
         <td>
           <a href="{% url 'todos:todo-comments-delete' todo.id comment.id %}" class="button is-text">
             Delete
@@ -49,27 +60,6 @@
     {% endfor %}
   </tbody>
 </table>
-
-
-
-<div class="box">
-  <div class="block">
-    <strong>Comments:</strong>
-    <ul>
-    {% for child in object_list %}
-      <div class='list-item'> 
-        <li>
-          {{ child.body }}
-        </li>
-      </div>
-      {% empty %}
-      None
-    {% endfor %}
-    </ul>
-  </div>
-</div>
-
-<br />
 
 <div class="field is-grouped">
   <p class="control">

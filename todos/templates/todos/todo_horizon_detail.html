@@ -1,11 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
+
 <h1 class="title">
   {{ horizon_name }}
 </h1>
+
 <a class="button is-link mb-5" href="{% url 'todos:todo-add' %}?horizon={{ horizon }}">
   Create
 </a>
+
 <table class="table is-fullwidth is-hoverable is-striped">
   <thead>
     <tr>
@@ -17,6 +20,9 @@
       </th>
       <th>
           Due Date
+      </th>
+      <th>
+          Created At
       </th>
       <th></th>
     </tr>
@@ -34,6 +40,9 @@
         </td>
         <td class="{% if todo.completed %} strikethrough {% endif %}">
           {{ todo.due_date }}
+        </td>
+        <td class="{% if todo.completed %} strikethrough {% endif %}">
+          {{ todo.created_at }}
         </td>
         <td>
           <form method="post" action="{% url 'todos:todo-toggle' todo.id %}" style="display: inline">

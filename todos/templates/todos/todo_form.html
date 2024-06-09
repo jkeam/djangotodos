@@ -44,6 +44,12 @@
       View
     </a>
   </p>
+
+  <p class="control">
+    <a href="{% url 'todos:todo-children' object.id %}" class="button is-text">
+      Children
+    </a>
+  </p>
   {% endif %}
 
   <p class="control">

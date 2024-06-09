@@ -44,7 +44,7 @@
         {{ child.name }} - {{ child.description }}
       </li>
       {% empty %}
-      <strong>None</strong>
+      None
     {% endfor %}
     </ul>
   </div>
@@ -57,6 +57,12 @@
   <p class="control">
     <a href="{% url 'todos:todo-update' object.id %}" class="button is-text">
       Update
+    </a>
+  </p>
+
+  <p class="control">
+    <a href="{% url 'todos:todo-children' object.id %}" class="button is-text">
+      Children
     </a>
   </p>
 

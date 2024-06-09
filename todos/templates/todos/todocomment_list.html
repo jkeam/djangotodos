@@ -52,6 +52,10 @@
           {{ comment.created_at }}
         </td>
         <td>
+          <a href="{% url 'todos:todo-comments-update' todo.id comment.id %}" class="button is-text">
+            Update
+          </a>
+          |
           <a href="{% url 'todos:todo-comments-delete' todo.id comment.id %}" class="button is-text">
             Delete
           </a>

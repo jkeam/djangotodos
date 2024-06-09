@@ -19,5 +19,6 @@ urlpatterns = [
     # comments
     path('<int:pk>/comments/', views.TodoComments.as_view(), name='todo-comments'),
     path('<int:pk>/comments/add/', views.create_comment, name='todo-comments-add'),
-    path('<int:todo_id>/comments/<int:pk>delete/', views.TodoCommentDeleteView.as_view(), name='todo-comments-delete'),
+    path('<int:todo_id>/comments/<int:pk>/delete/', views.TodoCommentDeleteView.as_view(), name='todo-comments-delete'),
+    path('<int:todo_id>/comments/<int:pk>/update/', views.TodoCommentUpdateView.as_view(), name='todo-comments-update'),
 ]

@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1 class="title">
+  Update Comment
+</h1>
+
+<form method="post">
+  {% for field in form %}
+    {% csrf_token %}
+    <div class="field">
+      <label class="label" for="{{ field.auto_id }}">{{ field.label }}</label>
+      <div class="control">
+        {{ field }}
+      </div>
+      {% if field.errors %}
+        <small class="error">{{ field.errors|striptags }}</small>
+      {% endif %}
+    </div>
+  {% endfor %}
+  <button type="submit" class="button is-primary">Save</button>
+</form>
+
+<br />
+
+<div class="field is-grouped">
+  <p class="control">
+    <a href="{% url 'todos:todo-comments' form.instance.todo.id %}" class="button is-text">
+      Back to All Comments
+    </a>
+  </p>
+</div>
+
+{% endblock %}

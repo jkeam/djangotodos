@@ -122,23 +122,6 @@ class TodoUpdateChildren(LoginRequiredMixin, UpdateView):
         kwargs['request'] = self.request
         return kwargs
 
-# def comment_for_article(request, todo_id):
-#     if not request.user.is_authenticated:
-#         return HttpResponseRedirect("/")
-#     if request.method == 'POST':
-#         todo = get_object_or_404(Todo, id = todo_id, owner=request.user)
-#         comment = None
-
-#         form = TodoCommentForm(data=request.POST)
-#         if form.is_valid():
-#             comment = form.save(commit=False)
-#             comment.todo = todo
-#             comment.save()
-#         return HttpResponseRedirect(reverse('todos:todo-update', kwargs={"pk": todo.id}))
-#         # return HttpResponseRedirect(reverse('todos:horizon-detail-list', kwargs={"pk": self.object.horizon
-#         # return render(request, 'blog/comment.html', {'article': article, 'form': form, 'comment': comment})
-#     return HttpResponseRedirect(reverse('todos:horizon-view-list'))
-
 class TodoComments(LoginRequiredMixin, ListView):
     model = TodoComment
     paginate_by = 100
@@ -177,6 +160,17 @@ class TodoCommentDeleteView(LoginRequiredMixin, DeleteView):
         return reverse('todos:todo-comments', kwargs={"pk": self.object.todo.pk})
     def get_object(self, qs=None):
         obj = super(TodoCommentDeleteView, self).get_object(qs)
+        if not obj.owner == self.request.user:
+            raise Http404
+        return obj
+
+class TodoCommentUpdateView(LoginRequiredMixin, UpdateView):
+    model = TodoComment
+    form_class = TodoCommentForm
+    def get_success_url(self):
+        return reverse('todos:todo-comments', kwargs={"pk": self.object.todo.pk})
+    def get_object(self, qs=None):
+        obj = super(TodoCommentUpdateView, self).get_object(qs)
         if not obj.owner == self.request.user:
             raise Http404
         return obj

@@ -2,12 +2,11 @@
 {% block content %}
 
 <h1 class="title">
-  {% if form.instance.id %}
-  Update &quot;{{ form.instance.name }}&quot;
-  {% else %}
-  New Entry
-  {% endif %}
+  {{ form.instance.name }}
 </h1>
+<h2 class="subtitle">
+  Horizon: {{ form.instance.horizon_name }}
+</h2>
 
 <form method="post">
   {% for field in form %}
@@ -15,8 +14,8 @@
     <div class="field">
       <label class="label" for="{{ field.auto_id }}">{{ field.label }}</label>
       <div class="control">
-        {% if field.name == 'horizon' %}
-          <div class="select">
+        {% if field.name == 'children' %}
+          <div class="box">
             {{ field }}
           </div>
         {% else %}
@@ -42,17 +41,11 @@
   </p>
 
   <p class="control">
-    <a href="{% url 'todos:todo-children' object.id %}" class="button is-text">
-      Children
+    <a href="{% url 'todos:todo-update' object.id %}" class="button is-text">
+      Update
     </a>
   </p>
   {% endif %}
-
-  <p class="control">
-    <a href="{% url 'todos:todo-comments' todo.id %}" class="button is-text">
-     Comments
-    </a>
-  </p>
 
   <p class="control">
     <a href="{% url 'todos:horizon-detail-list' form.instance.horizon %}" class="button is-text">

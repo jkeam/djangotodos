@@ -1,4 +1,4 @@
-from .models import Todo
+from .models import Todo, TodoComment
 from .forms import TodoForm, TodoChildrenForm, UserForm, TodoCommentForm
 from django.http import HttpResponseRedirect, Http404
 from django.urls import reverse_lazy, reverse
@@ -96,6 +96,11 @@ class TodoDeleteView(LoginRequiredMixin, DeleteView):
     model = Todo
     def get_success_url(self):
         return reverse('todos:horizon-detail-list', kwargs={"pk": self.object.horizon})
+    def get_object(self, qs=None):
+        obj = super(TodoDeleteView, self).get_object(qs)
+        if not obj.owner == self.request.user:
+            raise Http404
+        return obj
 
 class TodoUpdateChildren(LoginRequiredMixin, UpdateView):
     model = Todo
@@ -134,21 +139,44 @@ class TodoUpdateChildren(LoginRequiredMixin, UpdateView):
 #         # return render(request, 'blog/comment.html', {'article': article, 'form': form, 'comment': comment})
 #     return HttpResponseRedirect(reverse('todos:horizon-view-list'))
 
-# class TodoUpdateComments(LoginRequiredMixin, UpdateView):
-#     model = Todo
-#     form_class = TodoCommentForm
-#     def get_success_url(self):
-#         return reverse('todos:todo-update-comments', kwargs={"pk": self.object.horizon})
-#     def get_object(self, *args, **kwargs):
-#         obj = super(TodoUpdateComments, self).get_object(*args, **kwargs)
-#         if not obj.owner == self.request.user:
-#             raise Http404
-#         return obj
-#     def form_valid(self, form):
-#         form.instance.owner = self.request.user
-#         return super().form_valid(form)
-#     def get_form_kwargs(self):
-#         kwargs = super(TodoUpdateComments, self).get_form_kwargs()
-#         # kwargs['horizon'] = self.object.horizon
-#         # kwargs['request'] = self.request
-#         return kwargs
+class TodoComments(LoginRequiredMixin, ListView):
+    model = TodoComment
+    paginate_by = 100
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        path = self.request.path
+        todo_id = path.replace("/todos/", "").replace("/comments/", "")
+        context["todo"] = Todo.objects.get(pk=todo_id)
+        return context
+    def get_queryset(self):
+        path = self.request.path
+        todo_id = path.replace("/todos/", "").replace("/comments/", "")
+        todo = Todo.objects.get(pk=todo_id)
+        return TodoComment.objects.filter(owner=self.request.user, todo=todo)
+
+def create_comment(request, pk):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect("/")
+    if request.method == 'POST':
+        user = request.user
+        todo = Todo.objects.get(pk=pk)
+        if not todo.owner == user:
+            raise Http404
+        form = TodoCommentForm(data=request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.todo = todo
+            comment.owner = user
+            comment.save()
+        return HttpResponseRedirect(reverse('todos:todo-comments', kwargs={"pk": todo.pk}))
+    return HttpResponseRedirect(reverse('todos:horizon-view-list'))
+
+class TodoCommentDeleteView(LoginRequiredMixin, DeleteView):
+    model = TodoComment
+    def get_success_url(self):
+        return reverse('todos:todo-comments', kwargs={"pk": self.object.todo.pk})
+    def get_object(self, qs=None):
+        obj = super(TodoCommentDeleteView, self).get_object(qs)
+        if not obj.owner == self.request.user:
+            raise Http404
+        return obj

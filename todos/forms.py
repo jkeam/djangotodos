@@ -1,5 +1,5 @@
 from django import forms
-from .models import Todo
+from .models import Todo, TodoComment
 from django.utils.translation import gettext_lazy as _
 Horizon = Todo.Horizon
 
@@ -9,6 +9,9 @@ class TodoCommentForm(forms.ModelForm):
         widget=forms.Textarea(
             attrs={'placeholder': 'Comment', 'class': 'textarea'}
     ))
+    class Meta:
+        model = TodoComment
+        fields = ['body']
 
 class CustomChildren(forms.ModelMultipleChoiceField):
     def label_from_instance(self, todo):

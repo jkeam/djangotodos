@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1 class="title">
+  {{ todo.name }}
+</h1>
+
+<h2 class="subtitle">
+  Horizon: {{ todo.horizon_name }}
+</h2>
+
+<form action="{% url 'todos:todo-comments-add' todo.id %}" method="post">
+    {% csrf_token %}
+    <div class="field">
+      <label class="label" for="body">Body</label>
+      <div class="control">
+        <textarea id="body" name="body" class="textarea" placeholder="Comment"></textarea>
+      </div>
+    </div>
+    <div class="field is-grouped">
+      <div class="control">
+        <button type="submit" class="button is-primary">Submit</button>
+      </div>
+    </div>
+</form>
+
+
+<table class="table is-fullwidth is-hoverable is-striped">
+  <thead>
+    <tr>
+      <th>
+          Comment
+      </th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for comment in object_list %}
+      <tr>
+        <td class="">
+          {{ comment.body }}
+        </td>
+        <td>
+          <a href="{% url 'todos:todo-comments-delete' todo.id comment.id %}" class="button is-text">
+            Delete
+          </a>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+
+<div class="box">
+  <div class="block">
+    <strong>Comments:</strong>
+    <ul>
+    {% for child in object_list %}
+      <div class='list-item'> 
+        <li>
+          {{ child.body }}
+        </li>
+      </div>
+      {% empty %}
+      None
+    {% endfor %}
+    </ul>
+  </div>
+</div>
+
+<br />
+
+<div class="field is-grouped">
+  <p class="control">
+    <a href="{% url 'todos:todo-view' todo.id %}" class="button is-text">
+      View
+    </a>
+  </p>
+
+  <p class="control">
+    <a href="{% url 'todos:todo-update' todo.id %}" class="button is-text">
+      Update
+    </a>
+  </p>
+
+  <p class="control">
+    <a href="{% url 'todos:horizon-detail-list' todo.horizon %}" class="button is-text">
+      View All {{ todo.horizon_name }}
+    </a>
+  </p>
+</div>
+
+{% endblock %}

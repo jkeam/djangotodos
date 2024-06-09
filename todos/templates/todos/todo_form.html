@@ -38,11 +38,13 @@
 <br />
 
 <div class="field is-grouped">
+  {% if form.instance.pk %}
   <p class="control">
     <a href="{% url 'todos:todo-view' object.id %}" class="button is-text">
       View
     </a>
   </p>
+  {% endif %}
 
   <p class="control">
     <a href="{% url 'todos:horizon-detail-list' form.instance.horizon %}" class="button is-text">

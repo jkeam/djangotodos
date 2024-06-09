@@ -100,6 +100,7 @@ class TodoDeleteView(LoginRequiredMixin, DeleteView):
 class TodoUpdateChildren(LoginRequiredMixin, UpdateView):
     model = Todo
     form_class = TodoChildrenForm
+    template_name_suffix = "_children_form"
     def get_success_url(self):
         return reverse('todos:horizon-detail-list', kwargs={"pk": self.object.horizon})
     def get_object(self, *args, **kwargs):

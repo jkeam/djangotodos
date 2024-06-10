@@ -39,15 +39,31 @@
   <div class="block">
     <strong>Children:</strong>
     <ul>
-    {% for child in object.children.all %}
-      <li>
-        <a href="{% url 'todos:todo-view' child.pk %}" class="">
-          {{ child.name }} &ndash; {{ child.description }}
-        </a>
-      </li>
-      {% empty %}
-      None
-    {% endfor %}
+      {% for child in object.children.all %}
+        <li>
+          <a href="{% url 'todos:todo-view' child.pk %}" class="">
+            {{ child.name }} &ndash; {{ child.description }}
+          </a>
+        </li>
+        {% empty %}
+        None
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+  {% if not object.horizon == 'PU' %}
+  <div class="block">
+    <strong>Parents:</strong>
+    <ul>
+      {% for parent in object.is_contained_by %}
+        <li>
+          <a href="{% url 'todos:todo-view' parent.pk %}" class="">
+            {{ parent.name }} &ndash; {{ parent.description }}
+          </a>
+        </li>
+        {% empty %}
+        None
+      {% endfor %}
     </ul>
   </div>
   {% endif %}

@@ -25,9 +25,6 @@ class Todo(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
     children = models.ManyToManyField("self", symmetrical=False)
 
-    def horizon_name(self) -> str:
-        return Todo.horizon_value_to_name(self.horizon)
-
     @staticmethod
     def valid_horizon(hor:str) -> bool:
         return hor in ["AC", "PR", "FO", "GO", "VI", "PU"]
@@ -53,6 +50,12 @@ class Todo(models.Model):
 
     def __str__(self):
         return f"Todo {self.name} by {self.owner.username}"
+
+    def horizon_name(self) -> str:
+        return Todo.horizon_value_to_name(self.horizon)
+
+    def is_contained_by(self) -> list:
+        return Todo.objects.filter(children__in=[self.pk])
 
 
 class TodoComment(models.Model):

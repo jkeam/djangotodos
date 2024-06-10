@@ -10,6 +10,7 @@ urlpatterns = [
     # profiles
     path('profiles/', views.ProfileUpdateView.as_view(), name='profile-detail'),
     # todos
+    path('tree/', views.tree_view, name='todo-tree'),
     path('add/', views.TodoCreateView.as_view(), name='todo-add'),
     path('<int:pk>/', views.TodoView.as_view(), name='todo-view'),
     path('<int:pk>/update/', views.TodoUpdateView.as_view(), name='todo-update'),

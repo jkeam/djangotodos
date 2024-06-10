@@ -7,6 +7,14 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.shortcuts import render
 
+def tree_view(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect("/")
+    context = {
+        "todos": Todo.objects.filter(owner=request.user, horizon=Todo.Horizon.PURPOSE)
+    }
+    return render(request, "todos/todo_tree.html", context)
+
 def goto_horizon(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect("/")

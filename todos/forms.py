@@ -31,7 +31,7 @@ class TodoChildrenForm(forms.ModelForm):
                 horizon_enum = Horizon.FOCUS
             case "VI":
                 horizon_enum = Horizon.GOALS
-            case "PR":
+            case "PU":
                 horizon_enum = Horizon.VISIONS
             case "_":
                 horizon_enum = Horizon.PURPOSE

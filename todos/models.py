@@ -23,7 +23,7 @@ class Todo(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=False)
     updated_at = models.DateTimeField(auto_now=True, null=False)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
-    children = models.ManyToManyField("self")
+    children = models.ManyToManyField("self", symmetrical=False)
 
     def horizon_name(self) -> str:
         return Todo.horizon_value_to_name(self.horizon)

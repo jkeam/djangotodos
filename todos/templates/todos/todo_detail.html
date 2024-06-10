@@ -41,7 +41,9 @@
     <ul>
     {% for child in object.children.all %}
       <li>
-        {{ child.name }} - {{ child.description }}
+        <a href="{% url 'todos:todo-view' child.pk %}" class="">
+          {{ child.name }} &ndash; {{ child.description }}
+        </a>
       </li>
       {% empty %}
       None

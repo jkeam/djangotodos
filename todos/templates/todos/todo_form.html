@@ -46,13 +46,13 @@
       Children
     </a>
   </p>
-  {% endif %}
 
   <p class="control">
-    <a href="{% url 'todos:todo-comments' todo.id %}" class="button is-text">
+    <a href="{% url 'todos:todo-comments' object.id %}" class="button is-text">
      Comments
     </a>
   </p>
+  {% endif %}
 
   <p class="control">
     <a href="{% url 'todos:horizon-detail-list' form.instance.horizon %}" class="button is-text">

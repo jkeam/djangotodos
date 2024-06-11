@@ -1,18 +1,13 @@
-{% extends 'base.html' %}
-{% block content %}
-
-<h1 class="title">
-  All Todos
-</h1>
-
-<h2 class="subtitle">
-  Tree View
-</h2>
-
-Purpose &rarr; Vision &rarr; Goals &rarr; Focus &rarr; Projects &rarr; Actions
-<div class="box">
-  <ul class="tree">
-    {% for todo in todos %}
+<ul>
+  {% for todo in todos %}
+  {% if todo.is_action_horizon %}
+    <li>
+        {{ todo.name }}
+        <a href="{% url 'todos:todo-view' todo.pk %}" target="_blank" rel="noopener noreferrer">
+          [see in new tab]
+        </a>
+    </li>
+  {% else %}
     <li>
       <details
         hx-get="{% url 'todos:todo-tree-partial' todo.pk %}"
@@ -28,7 +23,6 @@ Purpose &rarr; Vision &rarr; Goals &rarr; Focus &rarr; Projects &rarr; Actions
         <ul></ul>
       </details>
     </li>
-    {% endfor %}
-  </ul>
-</div>
-{% endblock %}
+  {% endif %}
+  {% endfor %}
+</ul>

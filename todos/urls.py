@@ -9,8 +9,10 @@ urlpatterns = [
     path('horizons/<str:pk>', views.HorizonDetailListView.as_view(), name='horizon-detail-list'),
     # profiles
     path('profiles/', views.ProfileUpdateView.as_view(), name='profile-detail'),
-    # todos
+    # tree todos
     path('tree/', views.tree_view, name='todo-tree'),
+    path('tree-partial/<int:pk>', views.tree_view_partial, name='todo-tree-partial'),
+    # todos
     path('add/', views.TodoCreateView.as_view(), name='todo-add'),
     path('<int:pk>/', views.TodoView.as_view(), name='todo-view'),
     path('<int:pk>/update/', views.TodoUpdateView.as_view(), name='todo-update'),

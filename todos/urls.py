@@ -7,6 +7,7 @@ urlpatterns = [
     # horizons
     path('horizons/', views.HorizonListView.as_view(), name='horizon-view-list'),
     path('horizons/<str:pk>', views.HorizonDetailListView.as_view(), name='horizon-detail-list'),
+    path('horizons-partial/<str:pk>', views.HorizonDetailListPartialView.as_view(), name='horizon-detail-list-partial'),
     # profiles
     path('profiles/', views.ProfileUpdateView.as_view(), name='profile-detail'),
     # tree todos

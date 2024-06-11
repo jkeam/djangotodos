@@ -5,80 +5,107 @@
   {{ horizon_name }}
 </h1>
 
+<div x-data="{ showhidden: false }">
 <a class="button is-link mb-5" href="{% url 'todos:todo-add' %}?horizon={{ horizon }}">
   Create
 </a>
 
-<table class="table is-fullwidth is-hoverable is-striped">
-  <thead>
-    <tr>
-      <th>
-          Name
-      </th>
-      <th>
-          Description
-      </th>
-      <th>
-          Due Date
-      </th>
-      <th>
-          Created At
-      </th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for todo in page_obj %}
+<a
+    class="button is-text mb-5"
+    href="#"
+    x-show="! showhidden"
+    x-on:click="showhidden = ! showhidden"
+    hx-get="{% url 'todos:horizon-detail-list-partial' horizon %}?hidden=true"
+    hx-trigger="click"
+    hx-target="#todos"
+    hx-swap="innerHTML">
+  Show Hidden
+</a>
+
+<a
+    class="button is-text mb-5"
+    href="#"
+    x-show="showhidden"
+    x-on:click="showhidden = ! showhidden"
+    hx-get="{% url 'todos:horizon-detail-list-partial' horizon %}?hidden=false"
+    hx-trigger="click"
+    hx-target="#todos"
+    hx-swap="innerHTML">
+  Hide Hidden
+</a>
+
+<div id="todos">
+  <table class="table is-fullwidth is-hoverable is-striped">
+    <thead>
       <tr>
-        <td class="{% if todo.completed %} strikethrough {% endif %}">
-           <a href="{% url 'todos:todo-view' todo.id %}" class="">
-            {{ todo.name }}
-          </a>
-        </td>
-        <td class="{% if todo.completed %} strikethrough {% endif %}">
-          {{ todo.description }}
-        </td>
-        <td class="{% if todo.completed %} strikethrough {% endif %}">
-          {{ todo.due_date }}
-        </td>
-        <td class="{% if todo.completed %} strikethrough {% endif %}">
-          {{ todo.created_at }}
-        </td>
-        <td>
-          <form method="post" action="{% url 'todos:todo-toggle' todo.id %}" style="display: inline">
-            {% csrf_token %}
-            <button type="submit" class="button is-text">Toggle</button>
-          </form>
-          |
-          <a href="{% url 'todos:todo-update' todo.id %}" class="button is-text">
-           Update
-          </a>
-          |
-          <a href="{% url 'todos:todo-delete' todo.id %}" class="button is-text">
-            Delete
-          </a>
-        </td>
+        <th>
+            Name
+        </th>
+        <th>
+            Description
+        </th>
+        <th>
+            Due Date
+        </th>
+        <th>
+            Created At
+        </th>
+        <th></th>
       </tr>
-    {% endfor %}
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      {% for todo in page_obj %}
+        <tr>
+          <td class="{% if todo.completed %} strikethrough {% endif %}">
+             <a href="{% url 'todos:todo-view' todo.id %}" class="">
+              {{ todo.name }}
+            </a>
+          </td>
+          <td class="{% if todo.completed %} strikethrough {% endif %}">
+            {{ todo.description }}
+          </td>
+          <td class="{% if todo.completed %} strikethrough {% endif %}">
+            {{ todo.due_date }}
+          </td>
+          <td class="{% if todo.completed %} strikethrough {% endif %}">
+            {{ todo.created_at }}
+          </td>
+          <td>
+            <form method="post" action="{% url 'todos:todo-toggle' todo.id %}" style="display: inline">
+              {% csrf_token %}
+              <button type="submit" class="button is-text">Toggle</button>
+            </form>
+            |
+            <a href="{% url 'todos:todo-update' todo.id %}" class="button is-text">
+             Update
+            </a>
+            |
+            <a href="{% url 'todos:todo-delete' todo.id %}" class="button is-text">
+              Delete
+            </a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 
-<div class="pagination">
-    <span class="step-links">
-        {% if page_obj.has_previous %}
-            <a href="?page=1">&laquo; first</a>
-            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
-        {% endif %}
+  <div class="pagination">
+      <span class="step-links">
+          {% if page_obj.has_previous %}
+              <a href="?page=1">&laquo; first</a>
+              <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+          {% endif %}
 
-        <span class="current">
-            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-        </span>
+          <span class="current">
+              Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+          </span>
 
-        {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}">next</a>
-            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
-        {% endif %}
-    </span>
+          {% if page_obj.has_next %}
+              <a href="?page={{ page_obj.next_page_number }}">next</a>
+              <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+          {% endif %}
+      </span>
+  </div>
 </div>
 
 {% endblock %}

@@ -53,13 +53,32 @@ class HorizonDetailListView(LoginRequiredMixin, ListView):
     paginate_by = 100
     template_name_suffix = '_horizon_detail'
     def get_queryset(self):
-        horizon = self.request.path.replace('/todos/horizons/', '')
+        horizon:str = self.kwargs['pk']
         if not Todo.valid_horizon(horizon):
             horizon = 'AC'
-        return Todo.objects.filter(owner=self.request.user, horizon=horizon)
+        return Todo.objects.filter(owner=self.request.user, horizon=horizon, completed=False)
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        horizon = self.request.path.replace('/todos/horizons/', '')
+        horizon:str = self.kwargs['pk']
+        if not Todo.valid_horizon(horizon):
+            horizon = 'AC'
+        context["horizon"] = horizon
+        context["horizon_name"] = Todo.horizon_value_to_name(horizon)
+        return context
+
+class HorizonDetailListPartialView(LoginRequiredMixin, ListView):
+    model = Todo
+    paginate_by = 100
+    template_name_suffix = '_horizon_detail_partial'
+    def get_queryset(self):
+        horizon:str = self.kwargs['pk']
+        hidden:str = self.request.GET.get('hidden')
+        if not Todo.valid_horizon(horizon):
+            horizon = 'AC'
+        return Todo.objects.filter(owner=self.request.user, horizon=horizon, completed=(hidden == 'true'))
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        horizon:str = self.kwargs['pk']
         if not Todo.valid_horizon(horizon):
             horizon = 'AC'
         context["horizon"] = horizon
@@ -156,14 +175,15 @@ class TodoComments(LoginRequiredMixin, ListView):
     paginate_by = 100
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        path = self.request.path
-        todo_id = path.replace("/todos/", "").replace("/comments/", "")
-        context["todo"] = Todo.objects.get(pk=todo_id)
+        todo = Todo.objects.get(pk=self.kwargs['pk'])
+        if not self.request.user == todo.owner:
+            todo = None
+        context["todo"] = todo
         return context
     def get_queryset(self):
-        path = self.request.path
-        todo_id = path.replace("/todos/", "").replace("/comments/", "")
-        todo = Todo.objects.get(pk=todo_id)
+        todo = Todo.objects.get(pk=self.kwargs['pk'])
+        if not self.request.user == todo.owner:
+            return []
         return TodoComment.objects.filter(owner=self.request.user, todo=todo)
 
 def create_comment(request, pk):

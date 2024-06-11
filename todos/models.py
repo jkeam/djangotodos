@@ -45,6 +45,22 @@ class Todo(models.Model):
             case _:
                 return "Actions"
 
+    @staticmethod
+    def horizon_value_to_horizon(hor:str) -> Horizon:
+        match hor:
+            case "PR":
+                return Todo.Horizon.PROJECTS
+            case "FO":
+                return Todo.Horizon.FOCUS
+            case "GO":
+                return Todo.Horizon.GOALS
+            case "VI":
+                return Todo.Horizon.VISIONS
+            case "PU":
+                return Todo.Horizon.PURPOSE
+            case _:
+                return Todo.Horizon.ACTIONS
+
     class Meta:
         ordering = ["-id"]
 
@@ -57,6 +73,8 @@ class Todo(models.Model):
     def is_contained_by(self) -> list:
         return Todo.objects.filter(children__in=[self.pk])
 
+    def is_action_horizon(self) -> bool:
+        return self.horizon == Todo.Horizon.ACTIONS
 
 class TodoComment(models.Model):
     body = models.TextField(default='', max_length=512, null=False, blank=False)

@@ -1,0 +1,28 @@
+<ul>
+  {% for todo in todos %}
+  {% if todo.is_action_horizon %}
+    <li>
+        {{ todo.name }}
+        <a href="{% url 'todos:todo-view' todo.pk %}" target="_blank" rel="noopener noreferrer">
+          [see in new tab]
+        </a>
+    </li>
+  {% else %}
+    <li>
+      <details
+        hx-get="{% url 'todos:todo-tree-partial' todo.pk %}"
+        hx-trigger="click target:#summary-{{ todo.pk }}"
+        hx-target="find ul"
+        hx-swap="outerHTML">
+        <summary id="summary-{{todo.pk}}">
+          {{ todo.name }}
+          <a href="{% url 'todos:todo-view' todo.pk %}" target="_blank" rel="noopener noreferrer">
+            [see in new tab]
+          </a>
+        </summary>
+        <ul></ul>
+      </details>
+    </li>
+  {% endif %}
+  {% endfor %}
+</ul>

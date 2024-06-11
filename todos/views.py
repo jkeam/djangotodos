@@ -10,10 +10,22 @@ from django.shortcuts import render
 def tree_view(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect("/")
-    context = {
-        "todos": Todo.objects.filter(owner=request.user, horizon=Todo.Horizon.PURPOSE)
-    }
-    return render(request, "todos/todo_tree.html", context)
+    todos_count = Todo.objects.filter(owner=request.user, horizon=Todo.Horizon.PURPOSE).count()
+    todos = Todo.objects.filter(owner=request.user, horizon=Todo.Horizon.PURPOSE)
+    horizons = [
+            Todo.Horizon.VISIONS,
+            Todo.Horizon.GOALS,
+            Todo.Horizon.FOCUS,
+            Todo.Horizon.PROJECTS,
+            Todo.Horizon.ACTIONS
+    ]
+    count = 0
+    while todos_count == 0:
+        horizon = horizons[count]
+        todos_count = Todo.objects.filter(owner=request.user, horizon=horizon).count()
+        todos = Todo.objects.filter(owner=request.user, horizon=horizon)
+        count += 1
+    return render(request, "todos/todo_tree.html", { "todos": todos })
 
 def tree_view_partial(request, pk:int):
     if not request.user.is_authenticated:

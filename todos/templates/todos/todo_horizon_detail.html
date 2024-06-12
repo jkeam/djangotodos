@@ -56,24 +56,35 @@
     <tbody>
       {% for todo in page_obj %}
         <tr>
-          <td class="{% if todo.completed %} strikethrough {% endif %}">
+          <td class="{% if todo.blocked %} has-text-grey-light {% endif %}{% if todo.completed %} strikethrough {% endif %}">
              <a href="{% url 'todos:todo-view' todo.id %}" class="">
               {{ todo.name }}
             </a>
           </td>
-          <td class="{% if todo.completed %} strikethrough {% endif %}">
+          <td class="{% if todo.blocked %} has-text-grey-light {% endif %}{% if todo.completed %} strikethrough {% endif %}">
             {{ todo.description }}
           </td>
-          <td class="{% if todo.completed %} strikethrough {% endif %}">
+          <td class="{% if todo.blocked %} has-text-grey-light {% endif %}{% if todo.completed %} strikethrough {% endif %}">
             {{ todo.due_date }}
           </td>
-          <td class="{% if todo.completed %} strikethrough {% endif %}">
+          <td class="{% if todo.blocked %} has-text-grey-light {% endif %}{% if todo.completed %} strikethrough {% endif %}">
             {{ todo.created_at }}
           </td>
           <td>
             <form method="post" action="{% url 'todos:todo-toggle' todo.id %}" style="display: inline">
               {% csrf_token %}
               <button type="submit" class="button is-text">Toggle</button>
+            </form>
+            |
+            <form method="post" action="{% url 'todos:todo-blocked' todo.id %}" style="display: inline">
+              {% csrf_token %}
+              <button type="submit" class="button is-text">
+                {% if todo.blocked %}
+                  Unblock
+                {% else %}
+                  Block
+                {% endif %}
+              </button>
             </form>
             |
             <a href="{% url 'todos:todo-update' todo.id %}" class="button is-text">

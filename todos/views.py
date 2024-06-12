@@ -72,10 +72,13 @@ class HorizonDetailListPartialView(LoginRequiredMixin, ListView):
     template_name_suffix = '_horizon_detail_partial'
     def get_queryset(self):
         horizon:str = self.kwargs['pk']
-        hidden:str = self.request.GET.get('hidden')
+        hidden:str = self.request.GET.get('hidden') == 'true'
         if not Todo.valid_horizon(horizon):
             horizon = 'AC'
-        return Todo.objects.filter(owner=self.request.user, horizon=horizon, completed=(hidden == 'true'))
+        if hidden:
+            return Todo.objects.filter(owner=self.request.user, horizon=horizon)
+        else:
+            return Todo.objects.filter(owner=self.request.user, horizon=horizon, completed=False)
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         horizon:str = self.kwargs['pk']
@@ -136,6 +139,18 @@ def todo_toggle(request, pk):
         if not todo.owner == request.user:
             raise Http404
         todo.completed = not todo.completed
+        todo.save()
+        return HttpResponseRedirect(reverse('todos:horizon-detail-list', kwargs={"pk": todo.horizon}))
+    return HttpResponseRedirect(reverse('todos:horizon-view-list'))
+
+def todo_blocked(request, pk):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect("/")
+    if request.method == 'POST':
+        todo = Todo.objects.get(pk=pk)
+        if not todo.owner == request.user:
+            raise Http404
+        todo.blocked = not todo.blocked
         todo.save()
         return HttpResponseRedirect(reverse('todos:horizon-detail-list', kwargs={"pk": todo.horizon}))
     return HttpResponseRedirect(reverse('todos:horizon-view-list'))

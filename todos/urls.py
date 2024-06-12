@@ -17,8 +17,8 @@ urlpatterns = [
     path('add/', views.TodoCreateView.as_view(), name='todo-add'),
     path('<int:pk>/', views.TodoView.as_view(), name='todo-view'),
     path('<int:pk>/update/', views.TodoUpdateView.as_view(), name='todo-update'),
-    path('<int:pk>/toggle/', views.todo_toggle, name='todo-toggle'),
-    path('<int:pk>/blocked/', views.todo_blocked, name='todo-blocked'),
+    path('<int:pk>/toggle-partial/', views.todo_toggle, name='todo-toggle-partial'),
+    path('<int:pk>/blocked-partial/', views.todo_blocked, name='todo-blocked-partial'),
     path('<int:pk>/delete/', views.TodoDeleteView.as_view(), name='todo-delete'),
     path('<int:pk>/children/', views.TodoUpdateChildren.as_view(), name='todo-children'),
     # comments

@@ -1,0 +1,53 @@
+<tr id="tr-{{ todo.pk }}">
+  <td class="{% if todo.blocked %} has-text-grey-light {% endif %}{% if todo.completed %} strikethrough {% endif %}">
+     <a href="{% url 'todos:todo-view' todo.id %}" class="">
+      {{ todo.name }}
+    </a>
+  </td>
+  <td class="{% if todo.blocked %} has-text-grey-light {% endif %}{% if todo.completed %} strikethrough {% endif %}">
+    {{ todo.description }}
+  </td>
+  <td class="{% if todo.blocked %} has-text-grey-light {% endif %}{% if todo.completed %} strikethrough {% endif %}">
+    {{ todo.due_date }}
+  </td>
+  <td class="{% if todo.blocked %} has-text-grey-light {% endif %}{% if todo.completed %} strikethrough {% endif %}">
+    {{ todo.created_at }}
+  </td>
+  <td>
+    <form
+      style="display: inline"
+      hx-post="{% url 'todos:todo-toggle-partial' todo.pk %}"
+      hx-trigger="submit"
+      hx-target="#tr-{{ todo.pk }}"
+      hx-swap="outerHTML">
+      {% csrf_token %}
+      <button type="submit" class="button is-text">Toggle</button>
+      <input type="hidden" name="hidden" value="{{ hidden }}" />
+    </form>
+    |
+    <form
+      style="display: inline"
+      hx-post="{% url 'todos:todo-blocked-partial' todo.pk %}"
+      hx-trigger="submit"
+      hx-target="#tr-{{ todo.pk }}"
+      hx-swap="outerHTML">
+      {% csrf_token %}
+      <input type="hidden" name="hidden" value="{{ hidden }}" />
+      <button type="submit" class="button is-text">
+        {% if todo.blocked %}
+          Unblock
+        {% else %}
+          Block
+        {% endif %}
+      </button>
+    </form>
+    |
+    <a href="{% url 'todos:todo-update' todo.id %}" class="button is-text">
+     Update
+    </a>
+    |
+    <a href="{% url 'todos:todo-delete' todo.id %}" class="button is-text">
+      Delete
+    </a>
+  </td>
+</tr>

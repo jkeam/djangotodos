@@ -72,20 +72,15 @@ class HorizonDetailListPartialView(LoginRequiredMixin, ListView):
     template_name_suffix = '_horizon_detail_partial'
     def get_queryset(self):
         horizon:str = self.kwargs['pk']
-        hidden:str = self.request.GET.get('hidden') == 'true'
         if not Todo.valid_horizon(horizon):
-            horizon = 'AC'
-        if hidden:
+            horizon:str = 'AC'
+        if self.request.GET.get('hidden') == 'true':
             return Todo.objects.filter(owner=self.request.user, horizon=horizon)
         else:
             return Todo.objects.filter(owner=self.request.user, horizon=horizon, completed=False)
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        horizon:str = self.kwargs['pk']
-        if not Todo.valid_horizon(horizon):
-            horizon = 'AC'
-        context["horizon"] = horizon
-        context["horizon_name"] = Todo.horizon_value_to_name(horizon)
+        context["hidden"] = self.request.GET.get('hidden') == 'true'
         return context
 
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
@@ -140,7 +135,11 @@ def todo_toggle(request, pk):
             raise Http404
         todo.completed = not todo.completed
         todo.save()
-        return HttpResponseRedirect(reverse('todos:horizon-detail-list', kwargs={"pk": todo.horizon}))
+        context = {
+            "todo": todo,
+            "hidden": request.POST.get('hidden', True)
+        }
+        return render(request, "todos/todo_horizon_detail_row_partial.html", context)
     return HttpResponseRedirect(reverse('todos:horizon-view-list'))
 
 def todo_blocked(request, pk):
@@ -152,7 +151,11 @@ def todo_blocked(request, pk):
             raise Http404
         todo.blocked = not todo.blocked
         todo.save()
-        return HttpResponseRedirect(reverse('todos:horizon-detail-list', kwargs={"pk": todo.horizon}))
+        context = {
+            "todo": todo,
+            "hidden": request.POST.get('hidden', True)
+        }
+        return render(request, "todos/todo_horizon_detail_row_partial.html", context)
     return HttpResponseRedirect(reverse('todos:horizon-view-list'))
 
 class TodoDeleteView(LoginRequiredMixin, DeleteView):

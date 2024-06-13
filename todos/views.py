@@ -1,9 +1,11 @@
 from .models import Todo, TodoComment
-from .forms import TodoForm, TodoChildrenForm, UserForm, TodoCommentForm
+from .forms import TodoForm, TodoChildrenForm, UserForm, PasswordForm, TodoCommentForm
 from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.urls import reverse_lazy, reverse
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import PasswordChangeView
+from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.models import User
 from django.shortcuts import render
 import csv
@@ -106,15 +108,19 @@ class HorizonDetailListPartialView(LoginRequiredMixin, ListView):
         context["hidden"] = self.request.GET.get('hidden') == 'true'
         return context
 
-class ProfileUpdateView(LoginRequiredMixin, UpdateView):
+class ChangePasswordView(LoginRequiredMixin, SuccessMessageMixin, PasswordChangeView):
+    form_class = PasswordForm
+    template_name = 'registration/change_password.html'
+    success_message = "Successfully Changed Your Password"
+    success_url = reverse_lazy('todos:profile-password')
+
+class ProfileUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = User
     form_class = UserForm
+    success_message = "Successfully Updated Your Profile"
     success_url = reverse_lazy('todos:profile-detail')
     def get_object(self, *args, **kwargs):
-        obj = self.request.user
-        if not obj == self.request.user:
-            raise Http404
-        return obj
+        return self.request.user
 
 class TodoCreateView(LoginRequiredMixin, CreateView):
     model = Todo

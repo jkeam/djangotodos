@@ -10,6 +10,7 @@ urlpatterns = [
     path('horizons-partial/<str:pk>', views.HorizonDetailListPartialView.as_view(), name='horizon-detail-list-partial'),
     # profiles
     path('profiles/', views.ProfileUpdateView.as_view(), name='profile-detail'),
+    path('change-password/', views.ChangePasswordView.as_view(), name='profile-password'),
     # tree todos
     path('tree/', views.tree_view, name='todo-tree'),
     path('tree-partial/<int:pk>', views.tree_view_partial, name='todo-tree-partial'),

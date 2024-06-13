@@ -1,4 +1,6 @@
 from django import forms
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.models import User
 from .models import Todo, TodoComment
 from django.utils.translation import gettext_lazy as _
 Horizon = Todo.Horizon
@@ -63,6 +65,24 @@ class TodoForm(forms.ModelForm):
         model = Todo
         fields = ['name', 'description', 'due_date', 'horizon']
 
+class PasswordForm(PasswordChangeForm):
+    old_password = forms.CharField(
+        label="Old Password",
+        widget=forms.PasswordInput(
+            attrs={'placeholder': '', 'class': 'input'}
+    ))
+
+    new_password1 = forms.CharField(
+        label="New Password",
+        widget=forms.PasswordInput(
+            attrs={'placeholder': '', 'class': 'input'}
+    ))
+
+    new_password2 = forms.CharField(
+        label="New Password Confirmation",
+        widget=forms.PasswordInput(
+            attrs={'placeholder': '', 'class': 'input'}
+    ))
 
 class UserForm(forms.ModelForm):
     username = forms.CharField(
@@ -81,5 +101,5 @@ class UserForm(forms.ModelForm):
     ))
 
     class Meta:
-        model = Todo
+        model = User
         fields = ['username', 'first_name', 'last_name']

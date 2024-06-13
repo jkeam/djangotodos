@@ -26,7 +26,7 @@
                       <label class="label" for="{{ field.auto_id }}">{{ field.label }}</label>
                       <div class="control"> {{ field }} </div>
                       {% if field.errors %}
-                        <small class="error">{{ field.errors|striptags }}</small>
+                        <small class="error has-text-danger-dark">{{ field.errors|striptags }}</small>
                       {% endif %}
                     </div>
                   {% endfor %}

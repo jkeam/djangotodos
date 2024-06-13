@@ -18,6 +18,9 @@ from django.contrib import admin
 from django.urls import include, path
 from django.views.generic.base import TemplateView
 
+admin.site.site_title = 'Reflect'
+admin.site.site_header = 'Reflect Admin'
+admin.site.index_title = 'Site Admin'
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('todos/', include('todos.urls')),

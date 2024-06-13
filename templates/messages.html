@@ -1,0 +1,18 @@
+{% if messages %}
+<ul class="messages mt-5">
+    {% for message in messages %}
+      <li
+        class="
+               {% if message.tags %}{{ message.tags }}{% endif %}
+               {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %} has-text-danger
+               {% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %} has-text-success
+               {% elif message.level == DEFAULT_MESSAGE_LEVELS.WARNING %} has-text-warning
+               {% else %} has-text-info
+               {% endif %}
+               "
+      >
+        {{ message }}
+      </li>
+    {% endfor %}
+</ul>
+{% endif %}

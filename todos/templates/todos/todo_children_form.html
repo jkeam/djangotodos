@@ -27,7 +27,7 @@
         {% endif %}
       </div>
       {% if field.errors %}
-        <small class="error">{{ field.errors|striptags }}</small>
+        <small class="error has-text-danger-dark">{{ field.errors|striptags }}</small>
       {% endif %}
     </div>
   {% endfor %}

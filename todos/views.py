@@ -184,8 +184,25 @@ class TodoUpdateChildren(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
     def get_form_kwargs(self):
         kwargs = super(TodoUpdateChildren, self).get_form_kwargs()
-        kwargs['horizon'] = self.object.horizon
-        kwargs['request'] = self.request
+        match self.object.horizon:
+            case "PR":
+                horizon_enum = Todo.Horizon.ACTIONS
+            case "FO":
+                horizon_enum = Todo.Horizon.PROJECTS
+            case "GO":
+                horizon_enum = Todo.Horizon.FOCUS
+            case "VI":
+                horizon_enum = Todo.Horizon.GOALS
+            case "PU":
+                horizon_enum = Todo.Horizon.VISIONS
+            case _:
+                horizon_enum = Todo.Horizon.PURPOSE
+
+        kwargs['children'] = Todo.objects.filter(
+            owner=self.request.user,
+            horizon=horizon_enum.value
+        )
+        kwargs['label'] = horizon_enum.label
         return kwargs
 
 class TodoComments(LoginRequiredMixin, ListView):

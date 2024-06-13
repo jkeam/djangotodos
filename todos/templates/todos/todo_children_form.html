@@ -15,9 +15,13 @@
       <label class="label" for="{{ field.auto_id }}">{{ field.label }}</label>
       <div class="control">
         {% if field.name == 'children' %}
-          <div class="box">
-            {{ field }}
-          </div>
+          {% if field|length == 0 %}
+            None
+          {% else %}
+            <div class="box">
+              {{ field }}
+            </div>
+          {% endif %}
         {% else %}
           {{ field }}
         {% endif %}

@@ -19,30 +19,11 @@ class CustomChildren(forms.ModelMultipleChoiceField):
 
 class TodoChildrenForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop('request')
-        hor = kwargs.pop('horizon')
+        children = kwargs.pop('children')
+        label = kwargs.pop('label')
         super(TodoChildrenForm, self).__init__(*args, **kwargs)
-        match hor:
-            case "PR":
-                horizon_enum = Horizon.ACTIONS
-            case "FO":
-                horizon_enum = Horizon.PROJECTS
-            case "GO":
-                horizon_enum = Horizon.FOCUS
-            case "VI":
-                horizon_enum = Horizon.GOALS
-            case "PU":
-                horizon_enum = Horizon.VISIONS
-            case _:
-                horizon_enum = Horizon.PURPOSE
-
-        self.horizon = horizon_enum.value
-        self.horizon_label = horizon_enum.label
-        self.fields['children'].queryset = Todo.objects.filter(
-            owner=self.request.user,
-            horizon=self.horizon,
-        )
-        self.fields['children'].label = self.horizon_label
+        self.fields['children'].queryset = children
+        self.fields['children'].label = label
 
     children = CustomChildren(
         queryset=None,

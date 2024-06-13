@@ -25,7 +25,7 @@ class Todo(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=False)
     updated_at = models.DateTimeField(auto_now=True, null=False)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
-    children = models.ManyToManyField("self", symmetrical=False)
+    children = models.ManyToManyField("self", symmetrical=False, blank=True)
 
     @staticmethod
     def valid_horizon(hor:str) -> bool:

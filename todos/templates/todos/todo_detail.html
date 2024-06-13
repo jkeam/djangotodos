@@ -42,7 +42,11 @@
       {% for child in object.children.all %}
         <li>
           <a href="{% url 'todos:todo-view' child.pk %}" class="">
-            {{ child.name }} &ndash; {{ child.description }}
+            {% if child.description %}
+              {{ child.name }} &ndash; {{ child.description }}
+            {% else %}
+              {{ child.name }}
+            {% endif %}
           </a>
         </li>
         {% empty %}

@@ -94,6 +94,14 @@
   </p>
   {% endif %}
 
+  {% if not object.horizon == 'PU' %}
+  <p class="control">
+    <a href="{% url 'todos:todo-parents' object.id %}" class="button is-text">
+      Parents
+    </a>
+  </p>
+  {% endif %}
+
   <p class="control">
     <a href="{% url 'todos:todo-comments' todo.id %}" class="button is-text">
      Comments

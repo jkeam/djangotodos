@@ -1,8 +1,10 @@
 from .models import Todo, TodoComment
-from .forms import TodoForm, TodoChildrenForm, UserForm, PasswordForm, TodoCommentForm
+from .forms import TodoForm, TodoChildrenForm, TodoParentForm, UserForm, PasswordForm, TodoCommentForm
 from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.urls import reverse_lazy, reverse
+from django.forms.utils import ErrorList
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import PasswordChangeView
 from django.contrib.messages.views import SuccessMessageMixin
@@ -152,7 +154,9 @@ class TodoUpdateView(LoginRequiredMixin, UpdateView):
             raise Http404
         return obj
     def form_valid(self, form):
-        form.instance.owner = self.request.user
+        if not form.instance.owner == self.request.user:
+            form._errors[forms.forms.NON_FIELD_ERRORS] = ErrorList(["You do not own this"])
+            return self.form_invalid(form)
         return super().form_valid(form)
 
 def todo_toggle(request, pk):
@@ -209,30 +213,56 @@ class TodoUpdateChildren(LoginRequiredMixin, UpdateView):
             raise Http404
         return obj
     def form_valid(self, form):
-        form.instance.owner = self.request.user
+        if not form.instance.owner == self.request.user:
+            form._errors[forms.forms.NON_FIELD_ERRORS] = ErrorList(["You do not own this"])
+            return self.form_invalid(form)
         return super().form_valid(form)
     def get_form_kwargs(self):
         kwargs = super(TodoUpdateChildren, self).get_form_kwargs()
-        match self.object.horizon:
-            case "PR":
-                horizon_enum = Todo.Horizon.ACTIONS
-            case "FO":
-                horizon_enum = Todo.Horizon.PROJECTS
-            case "GO":
-                horizon_enum = Todo.Horizon.FOCUS
-            case "VI":
-                horizon_enum = Todo.Horizon.GOALS
-            case "PU":
-                horizon_enum = Todo.Horizon.VISIONS
-            case _:
-                horizon_enum = Todo.Horizon.PURPOSE
-
+        horizon_enum = self.object.horizon_below()
         kwargs['children'] = Todo.objects.filter(
             owner=self.request.user,
             horizon=horizon_enum.value
         )
         kwargs['label'] = horizon_enum.label
         return kwargs
+
+def update_parents(request, pk):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect("/")
+    todo = Todo.objects.get(pk=pk)
+    if not todo.owner == request.user:
+        raise Http404
+    above = todo.horizon_above()
+    label = Todo.horizon_value_to_name(above.value)
+    all_todos = Todo.objects.filter(owner=request.user, horizon=above)
+    parents = todo.todo_set.all()
+    form = TodoParentForm(parents=all_todos, label=label, data={'parents': parents})
+    context = {
+            "todo": todo,
+            "object": todo,
+            "parents": parents,
+            "form": form,
+            "label": label,
+    }
+    if request.method == 'POST':
+        form = TodoParentForm(parents=all_todos, label=label, data=request.POST)
+        context['form'] = form
+        if form.is_valid():
+            chosen_parents = form.cleaned_data.get('parents', [])
+            existing_parents = todo.todo_set.all()
+            # remove if not chosen
+            for parent in existing_parents:
+                if parent not in chosen_parents:
+                    parent.children.remove(todo)
+                    parent.save()
+            # add if not in chosen
+            for parent in chosen_parents:
+                if parent not in existing_parents:
+                    parent.children.add(todo)
+                    parent.save()
+            messages.success(request, "Successfully updated")
+    return render(request, "todos/todo_children_form.html", context)
 
 class TodoComments(LoginRequiredMixin, ListView):
     model = TodoComment

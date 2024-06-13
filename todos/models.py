@@ -78,6 +78,36 @@ class Todo(models.Model):
     def is_action_horizon(self) -> bool:
         return self.horizon == Todo.Horizon.ACTIONS
 
+    def horizon_below(self) -> (Horizon|None):
+        match self.horizon:
+            case "PR":
+                return Todo.Horizon.ACTIONS
+            case "FO":
+                return Todo.Horizon.PROJECTS
+            case "GO":
+                return Todo.Horizon.FOCUS
+            case "VI":
+                return Todo.Horizon.GOALS
+            case "PU":
+                return Todo.Horizon.VISIONS
+            case _:
+                return None
+
+    def horizon_above(self) -> (Horizon|None):
+        match self.horizon:
+            case "AC":
+                return Todo.Horizon.PROJECTS
+            case "PR":
+                return Todo.Horizon.FOCUS
+            case "FO":
+                return Todo.Horizon.GOALS
+            case "GO":
+                return Todo.Horizon.VISIONS
+            case "VI":
+                return Todo.Horizon.PURPOSE
+            case _:
+                return None
+
     def write_to_csv(self, csv_writer, write_header:bool = False):
         if write_header:
             csv_writer.writerow([

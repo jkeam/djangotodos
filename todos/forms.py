@@ -40,6 +40,24 @@ class TodoChildrenForm(forms.ModelForm):
         model = Todo
         fields = ['children']
 
+class TodoParentForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        parents = kwargs.pop('parents')
+        label = kwargs.pop('label')
+        super(TodoParentForm, self).__init__(*args, **kwargs)
+        self.fields['parents'].queryset = parents
+        self.fields['parents'].label = label
+
+    parents = CustomChildren(
+        queryset=None,
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+    )
+
+    class Meta:
+        model = Todo
+        fields = ['parent']
+
 class TodoForm(forms.ModelForm):
     name = forms.CharField(
         widget=forms.TextInput(

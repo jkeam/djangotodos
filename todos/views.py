@@ -1,15 +1,15 @@
 from .models import Todo, TodoComment
 from .forms import TodoForm, TodoChildrenForm, UserForm, TodoCommentForm
-from django.http import HttpResponseRedirect, Http404
+from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.urls import reverse_lazy, reverse
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.shortcuts import render
+import csv
 
-def tree_view(request):
-    if not request.user.is_authenticated:
-        return HttpResponseRedirect("/")
+# Helper methods
+def get_todo_tree(owner) -> list[Todo]:
     horizons: list[Todo.Horizon] = [
             Todo.Horizon.PURPOSE,
             Todo.Horizon.VISIONS,
@@ -19,10 +19,33 @@ def tree_view(request):
             Todo.Horizon.ACTIONS
     ]
     hor:int = 0
-    todos = Todo.objects.filter(owner=request.user, horizon=horizons[hor])
+    todos = Todo.objects.filter(owner=owner, horizon=horizons[hor])
     while len(todos) == 0:
         hor += 1
-        todos = Todo.objects.filter(owner=request.user, horizon=horizons[hor])
+        todos = Todo.objects.filter(owner=owner, horizon=horizons[hor])
+    return todos
+
+# Views
+def export_view(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect("/")
+    if request.method == 'POST':
+        response = HttpResponse(
+            content_type="text/csv",
+            headers={"Content-Disposition": 'attachment; filename="todos.csv"'},
+        )
+        writer = csv.writer(response)
+        count:int = 0
+        for todo in Todo.objects.filter(owner=request.user):
+            todo.write_to_csv(writer, count == 0)
+            count += 1
+        return response
+    return render(request, "todos/todo_export.html")
+
+def tree_view(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect("/")
+    todos = get_todo_tree(request.user)
     return render(request, "todos/todo_tree.html", { "todos": todos })
 
 def tree_view_partial(request, pk:int):

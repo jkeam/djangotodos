@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1 class="title">
+  Export
+</h1>
+
+<h2 class="subtitle">
+  All Todos
+</h2>
+
+<form method="post" action="{% url 'todos:todo-export' %}">
+  {% csrf_token %}
+  <button type="submit" class="button is-primary">
+    Export All to CSV
+  </button>
+</form>
+{% endblock %}

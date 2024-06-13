@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
+from csv import writer
 
 class Todo(models.Model):
     class Horizon(models.TextChoices):
@@ -76,6 +77,32 @@ class Todo(models.Model):
 
     def is_action_horizon(self) -> bool:
         return self.horizon == Todo.Horizon.ACTIONS
+
+    def write_to_csv(self, csv_writer, write_header:bool = False):
+        if write_header:
+            csv_writer.writerow([
+                "Horizon",
+                "Name",
+                "Description",
+                "Due Date",
+                "Completed",
+                "Blocked",
+                "Created At",
+                "Updated At",
+                "Children Ids"
+            ])
+        csv_writer.writerow([
+            self.horizon,
+            self.name,
+            self.description,
+            self.due_date,
+            self.completed,
+            self.blocked,
+            self.created_at,
+            self.updated_at,
+            [child.pk for child in self.children.all()],
+        ])
+        return csv_writer
 
 class TodoComment(models.Model):
     body = models.TextField(default='', max_length=512, null=False, blank=False)

@@ -62,7 +62,11 @@
       {% for parent in object.is_contained_by %}
         <li>
           <a href="{% url 'todos:todo-view' parent.pk %}" class="">
-            {{ parent.name }} &ndash; {{ parent.description }}
+            {% if parent.description %}
+              {{ parent.name }} &ndash; {{ parent.description }}
+            {% else %}
+              {{ parent.name }}
+            {% endif %}
           </a>
         </li>
         {% empty %}

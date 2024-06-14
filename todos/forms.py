@@ -17,10 +17,7 @@ class TodoCommentForm(forms.ModelForm):
 
 class CustomChildren(forms.ModelMultipleChoiceField):
     def label_from_instance(self, todo):
-        if todo.description:
-            return f"{todo.name} - {todo.description}"
-        else:
-            return todo.name
+        return todo.name
 
 class TodoChildrenForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):

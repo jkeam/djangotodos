@@ -5,7 +5,7 @@
     </a>
   </td>
   <td class="{% if todo.blocked %} has-text-grey-light {% endif %}{% if todo.completed %} strikethrough {% endif %}">
-    {{ todo.description }}
+    {{ todo.description|truncatechars:32 }}
   </td>
   <td class="{% if todo.blocked %} has-text-grey-light {% endif %}{% if todo.completed %} strikethrough {% endif %}">
     {{ todo.due_date }}

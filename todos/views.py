@@ -49,8 +49,11 @@ def export_view(request):
 def tree_view(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect("/")
-    todos = get_todo_tree(request.user)
-    return render(request, "todos/todo_tree.html", { "todos": todos })
+    user = request.user
+    todos = get_todo_tree(user)
+    orphaned = Todo.objects.filter(owner=user, parents=None) \
+        .exclude(horizon=Todo.Horizon.PURPOSE)
+    return render(request, "todos/todo_tree.html", { "todos": todos, "orphaned":orphaned })
 
 def tree_view_partial(request, pk:int):
     if not request.user.is_authenticated:
@@ -236,7 +239,7 @@ def update_parents(request, pk):
     above = todo.horizon_above()
     label = Todo.horizon_value_to_name(above.value)
     all_todos = Todo.objects.filter(owner=request.user, horizon=above)
-    parents = todo.todo_set.all()
+    parents = todo.parents.all()
     form = TodoParentForm(parents=all_todos, label=label, data={'parents': parents})
     context = {
             "todo": todo,
@@ -250,7 +253,7 @@ def update_parents(request, pk):
         context['form'] = form
         if form.is_valid():
             chosen_parents = form.cleaned_data.get('parents', [])
-            existing_parents = todo.todo_set.all()
+            existing_parents = todo.parents.all()
             # remove if not chosen
             for parent in existing_parents:
                 if parent not in chosen_parents:

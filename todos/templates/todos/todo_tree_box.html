@@ -1,0 +1,21 @@
+<div class="box">
+  <ul class="tree">
+    {% for todo in todos %}
+    <li>
+      <details
+        hx-get="{% url 'todos:todo-tree-partial' todo.pk %}"
+        hx-trigger="click target:#summary-{{ todo.pk }}"
+        hx-target="find ul"
+        hx-swap="outerHTML">
+        <summary id="summary-{{todo.pk}}">
+          {{ todo.name }}
+          <a href="{% url 'todos:todo-view' todo.pk %}" target="_blank" rel="noopener noreferrer">
+            [see in new tab]
+          </a>
+        </summary>
+        <ul></ul>
+      </details>
+    </li>
+    {% endfor %}
+  </ul>
+</div>

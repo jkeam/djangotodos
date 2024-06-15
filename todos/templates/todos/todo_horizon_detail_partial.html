@@ -2,22 +2,43 @@
   <thead>
     <tr>
       <th>
-        <a href="?order_by=name&hidden={{hidden}}&sort={% if sort == 'asc' %}desc{% else %}asc{% endif %}">
-          Name
-        </a>
+        <div class="icon-text">
+          {% if order_by == 'name' %}
+          <span class="icon has-text-info">
+            <i class="fas fa-arrow-{% if sort == 'asc' %}down{% else %}up{% endif %}"></i>
+          </span>
+          {% endif %}
+          <a href="?order_by=name&hidden={{hidden}}&sort={% if sort == 'asc' %}desc{% else %}asc{% endif %}">
+            Name
+          </a>
+        </div>
       </th>
       <th>
           Description
       </th>
       <th>
-        <a href="?order_by=due_date&hidden={{hidden}}&sort={% if sort == 'asc' %}desc{% else %}asc{% endif %}">
-          Due Date
-        </a>
+        <div class="icon-text">
+          {% if order_by == 'due_date' %}
+          <span class="icon has-text-info">
+            <i class="fas fa-arrow-{% if sort == 'asc' %}down{% else %}up{% endif %}"></i>
+          </span>
+          {% endif %}
+          <a href="?order_by=due_date&hidden={{hidden}}&sort={% if sort == 'asc' %}desc{% else %}asc{% endif %}">
+            Due Date
+          </a>
+        </div>
       </th>
       <th>
-        <a href="?order_by=created_at&hidden={{hidden}}&sort={% if sort == 'asc' %}desc{% else %}asc{% endif %}">
-          Created At
-        </a>
+        <div class="icon-text">
+          {% if order_by == 'created_at' %}
+          <span class="icon has-text-info">
+            <i class="fas fa-arrow-{% if sort == 'asc' %}down{% else %}up{% endif %}"></i>
+          </span>
+          {% endif %}
+          <a href="?order_by=created_at&hidden={{hidden}}&sort={% if sort == 'asc' %}desc{% else %}asc{% endif %}">
+            Created At
+          </a>
+        </div>
       </th>
       <th></th>
     </tr>

@@ -5,18 +5,25 @@
   {% if form.instance.id %}
   Update &quot;{{ form.instance.name }}&quot;
   {% else %}
-  New Entry
+  New {{ form.instance.horizon.label }}
   {% endif %}
 </h1>
 
 <form method="post">
   {% for field in form %}
     {% csrf_token %}
+    {% if field.name == 'parents' and form.instance.horizon == 'PU' %}
+      &nbsp;
+    {% elif field.name == 'children' and form.instance.horizon == 'AC' %}
+      &nbsp;
+    {% else %}
     <div class="field">
+      {% if not field.name == 'horizon' %}
       <label class="label" for="{{ field.auto_id }}">{{ field.label }}</label>
+      {% endif %}
       <div class="control">
-        {% if field.name == 'horizon' %}
-          <div class="select">
+        {% if field.name == 'parents' or field.name == 'children' %}
+          <div class="box">
             {{ field }}
           </div>
         {% else %}
@@ -27,6 +34,7 @@
         <small class="error has-text-danger">{{ field.errors|striptags }}</small>
       {% endif %}
     </div>
+    {% endif %}
   {% endfor %}
   <button type="submit" class="button is-primary">Save</button>
 </form>
@@ -40,14 +48,6 @@
       View
     </a>
   </p>
-
-  {% if not object.horizon == 'AC' %}
-  <p class="control">
-    <a href="{% url 'todos:todo-children' object.id %}" class="button is-text">
-      Children
-    </a>
-  </p>
-  {% endif %}
 
   <p class="control">
     <a href="{% url 'todos:todo-comments' object.id %}" class="button is-text">

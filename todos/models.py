@@ -5,11 +5,11 @@ from csv import writer
 
 class Todo(models.Model):
     class Horizon(models.TextChoices):
-        ACTIONS = "AC", _("Actions")
-        PROJECTS = "PR", _("Projects")
+        ACTIONS = "AC", _("Action")
+        PROJECTS = "PR", _("Project")
         FOCUS = "FO", _("Focus")
-        GOALS = "GO", _("Goals")
-        VISIONS = "VI", _("Visions")
+        GOALS = "GO", _("Goal")
+        VISIONS = "VI", _("Vision")
         PURPOSE = "PU", _("Purpose")
 
     horizon = models.CharField(

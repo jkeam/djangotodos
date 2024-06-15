@@ -19,43 +19,22 @@ class CustomChildren(forms.ModelMultipleChoiceField):
     def label_from_instance(self, todo):
         return todo.name
 
-class TodoChildrenForm(forms.ModelForm):
+class TodoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         children = kwargs.pop('children')
-        label = kwargs.pop('label')
-        super(TodoChildrenForm, self).__init__(*args, **kwargs)
-        self.fields['children'].queryset = children
-        self.fields['children'].label = label
-
-    children = CustomChildren(
-        queryset=None,
-        required=False,
-        widget=forms.CheckboxSelectMultiple,
-    )
-
-    class Meta:
-        model = Todo
-        fields = ['children']
-
-class TodoParentForm(forms.Form):
-    def __init__(self, *args, **kwargs):
+        children_label = kwargs.pop('children_label')
+        initial_children = kwargs.pop('initial_children')
         parents = kwargs.pop('parents')
-        label = kwargs.pop('label')
-        super(TodoParentForm, self).__init__(*args, **kwargs)
+        parent_label = kwargs.pop('parent_label')
+        initial_parents = kwargs.pop('initial_parents')
+        super(TodoForm, self).__init__(*args, **kwargs)
+        self.fields['children'].queryset = children
+        self.fields['children'].label = f"Children {children_label}"
+        self.fields['children'].initial = initial_children
         self.fields['parents'].queryset = parents
-        self.fields['parents'].label = label
+        self.fields['parents'].label = f"Parent {parent_label}"
+        self.fields['parents'].initial = initial_parents
 
-    parents = CustomChildren(
-        queryset=None,
-        required=False,
-        widget=forms.CheckboxSelectMultiple,
-    )
-
-    class Meta:
-        model = Todo
-        fields = ['parent']
-
-class TodoForm(forms.ModelForm):
     name = forms.CharField(
         widget=forms.TextInput(
             attrs={'placeholder': 'Name of task', 'class': 'input'}
@@ -76,13 +55,25 @@ class TodoForm(forms.ModelForm):
 
     horizon = forms.ChoiceField(
         choices=Horizon.choices,
+        required=True,
+        widget=forms.HiddenInput()
+    )
+
+    children = CustomChildren(
+        queryset=None,
         required=False,
-        widget=forms.Select()
+        widget=forms.CheckboxSelectMultiple,
+    )
+
+    parents = CustomChildren(
+        queryset=None,
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
     )
 
     class Meta:
         model = Todo
-        fields = ['name', 'description', 'due_date', 'horizon']
+        fields = ['name', 'description', 'due_date', 'horizon', 'children', 'parents']
 
 class PasswordForm(PasswordChangeForm):
     old_password = forms.CharField(

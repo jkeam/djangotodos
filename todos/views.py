@@ -99,33 +99,35 @@ class HorizonDetailListView(LoginRequiredMixin, ListView):
     template_name_suffix = '_horizon_detail'
     def get_queryset(self):
         horizon:str = self.kwargs['pk']
+        order_by:str = self.request.GET.get('order_by', 'created_at')
+        sort:str = self.request.GET.get('sort', 'asc')
         if not Todo.valid_horizon(horizon):
             horizon = 'AC'
-        return Todo.objects.filter(owner=self.request.user, horizon=horizon, completed=False)
+        if order_by not in ['name', 'due_date', 'created_at']:
+            order_by = 'created_at'
+        if sort not in ['asc', 'desc']:
+            sort = 'asc'
+        if sort == 'desc':
+            order_by = f"-{order_by}"
+        if self.request.GET.get('hidden') == 'true':
+            return Todo.objects.filter(
+                    owner=self.request.user,
+                    horizon=horizon).order_by(order_by)
+        else:
+            return Todo.objects.filter(
+                    owner=self.request.user,
+                    horizon=horizon,
+                    completed=False).order_by(order_by)
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         horizon:str = self.kwargs['pk']
         if not Todo.valid_horizon(horizon):
             horizon = 'AC'
+        context["hidden"] = self.request.GET.get('hidden')
         context["horizon"] = horizon
         context["horizon_name"] = Todo.horizon_value_to_name(horizon)
-        return context
-
-class HorizonDetailListPartialView(LoginRequiredMixin, ListView):
-    model = Todo
-    paginate_by = 100
-    template_name_suffix = '_horizon_detail_partial'
-    def get_queryset(self):
-        horizon:str = self.kwargs['pk']
-        if not Todo.valid_horizon(horizon):
-            horizon:str = 'AC'
-        if self.request.GET.get('hidden') == 'true':
-            return Todo.objects.filter(owner=self.request.user, horizon=horizon)
-        else:
-            return Todo.objects.filter(owner=self.request.user, horizon=horizon, completed=False)
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["hidden"] = self.request.GET.get('hidden') == 'true'
+        context["order_by"] = self.request.GET.get('order_by')
+        context["sort"] = self.request.GET.get('sort')
         return context
 
 class ChangePasswordView(LoginRequiredMixin, SuccessMessageMixin, PasswordChangeView):
@@ -277,7 +279,9 @@ def todo_toggle(request, pk):
         todo.save()
         context = {
             "todo": todo,
-            "hidden": request.POST.get('hidden', True)
+            "hidden": request.POST.get('hidden', 'true'),
+            "sort": request.POST.get('sort', 'asc'),
+            "order_by": request.POST.get('order_by', 'created_at'),
         }
         return render(request, "todos/todo_horizon_detail_row_partial.html", context)
     return HttpResponseRedirect(reverse('todos:horizon-view-list'))
@@ -293,7 +297,9 @@ def todo_blocked(request, pk):
         todo.save()
         context = {
             "todo": todo,
-            "hidden": request.POST.get('hidden', True)
+            "hidden": request.POST.get('hidden', 'true'),
+            "sort": request.POST.get('sort', 'asc'),
+            "order_by": request.POST.get('order_by', 'created_at'),
         }
         return render(request, "todos/todo_horizon_detail_row_partial.html", context)
     return HttpResponseRedirect(reverse('todos:horizon-view-list'))

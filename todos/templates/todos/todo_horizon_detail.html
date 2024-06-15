@@ -10,32 +10,19 @@
   Create
 </a>
 
-<a
-    class="button is-text mb-5"
-    href="#"
-    x-show="! showhidden"
-    x-on:click="showhidden = ! showhidden"
-    hx-get="{% url 'todos:horizon-detail-list-partial' horizon %}?hidden=true"
-    hx-trigger="click"
-    hx-target="#todos"
-    hx-swap="innerHTML">
-  Show Hidden
-</a>
-
-<a
-    class="button is-text mb-5"
-    href="#"
-    x-show="showhidden"
-    x-on:click="showhidden = ! showhidden"
-    hx-get="{% url 'todos:horizon-detail-list-partial' horizon %}?hidden=false"
-    hx-trigger="click"
-    hx-target="#todos"
-    hx-swap="innerHTML">
+{% if hidden == 'true' %}
+<a class="button is-text mb-5" href="?order_by={{order_by}}&hidden=false&sort={{sort}}">
   Hide Hidden
 </a>
+{% else %}
+<a class="button is-text mb-5" href="?order_by={{order_by}}&hidden=true&sort={{sort}}">
+  Show Hidden
+</a>
+{% endif %}
+
 
 <div id="todos">
-  {% include "todos/todo_horizon_detail_partial.html" with page_obj=page_obj hidden=False %}
+  {% include "todos/todo_horizon_detail_partial.html" with page_obj=page_obj hidden=hidden order_by=order_by sort=sort %}
 </div>
 
 {% endblock %}

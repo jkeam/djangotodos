@@ -2,16 +2,22 @@
   <thead>
     <tr>
       <th>
+        <a href="?order_by=name&hidden={{hidden}}&sort={% if sort == 'asc' %}desc{% else %}asc{% endif %}">
           Name
+        </a>
       </th>
       <th>
           Description
       </th>
       <th>
+        <a href="?order_by=due_date&hidden={{hidden}}&sort={% if sort == 'asc' %}desc{% else %}asc{% endif %}">
           Due Date
+        </a>
       </th>
       <th>
+        <a href="?order_by=created_at&hidden={{hidden}}&sort={% if sort == 'asc' %}desc{% else %}asc{% endif %}">
           Created At
+        </a>
       </th>
       <th></th>
     </tr>

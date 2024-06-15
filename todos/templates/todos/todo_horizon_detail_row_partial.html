@@ -23,6 +23,8 @@
       {% csrf_token %}
       <button type="submit" class="button is-text">Toggle</button>
       <input type="hidden" name="hidden" value="{{ hidden }}" />
+      <input type="hidden" name="order_by" value="{{ order_by }}" />
+      <input type="hidden" name="sort" value="{{ sort }}" />
     </form>
     |
     <form
@@ -33,6 +35,8 @@
       hx-swap="outerHTML">
       {% csrf_token %}
       <input type="hidden" name="hidden" value="{{ hidden }}" />
+      <input type="hidden" name="order_by" value="{{ order_by }}" />
+      <input type="hidden" name="sort" value="{{ sort }}" />
       <button type="submit" class="button is-text">
         {% if todo.blocked %}
           Unblock

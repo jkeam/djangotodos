@@ -90,8 +90,6 @@ class HorizonListView(LoginRequiredMixin, ListView):
     model = Todo
     paginate_by = 100
     template_name_suffix = '_horizon_list'
-    def get_queryset(self):
-        return Todo.objects.filter(owner=self.request.user)
 
 class HorizonDetailListView(LoginRequiredMixin, ListView):
     model = Todo
@@ -99,12 +97,12 @@ class HorizonDetailListView(LoginRequiredMixin, ListView):
     template_name_suffix = '_horizon_detail'
     def get_queryset(self):
         horizon:str = self.kwargs['pk']
-        order_by:str = self.request.GET.get('order_by', 'created_at')
+        order_by:str = self.request.GET.get('order_by', 'due_date')
         sort:str = self.request.GET.get('sort', 'asc')
         if not Todo.valid_horizon(horizon):
             horizon = 'AC'
         if order_by not in ['name', 'due_date', 'created_at']:
-            order_by = 'created_at'
+            order_by = 'due_date'
         if sort not in ['asc', 'desc']:
             sort = 'asc'
         if sort == 'desc':
@@ -281,7 +279,7 @@ def todo_toggle(request, pk):
             "todo": todo,
             "hidden": request.POST.get('hidden', 'true'),
             "sort": request.POST.get('sort', 'asc'),
-            "order_by": request.POST.get('order_by', 'created_at'),
+            "order_by": request.POST.get('order_by', 'due_date'),
         }
         return render(request, "todos/todo_horizon_detail_row_partial.html", context)
     return HttpResponseRedirect(reverse('todos:horizon-view-list'))
@@ -299,7 +297,7 @@ def todo_blocked(request, pk):
             "todo": todo,
             "hidden": request.POST.get('hidden', 'true'),
             "sort": request.POST.get('sort', 'asc'),
-            "order_by": request.POST.get('order_by', 'created_at'),
+            "order_by": request.POST.get('order_by', 'due_date'),
         }
         return render(request, "todos/todo_horizon_detail_row_partial.html", context)
     return HttpResponseRedirect(reverse('todos:horizon-view-list'))

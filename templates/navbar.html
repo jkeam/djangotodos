@@ -34,27 +34,27 @@
         </div>
       </div>
 
-      <a class="navbar-item" href="{% url 'todos:horizon-detail-list' 'AC' %}">
+      <a class="navbar-item {% if request.path == '/todos/horizons/AC' %} is-active {% endif %}" href="{% url 'todos:horizon-detail-list' 'AC' %}">
         Actions
       </a>
 
-      <a class="navbar-item" href="{% url 'todos:horizon-detail-list' 'PR' %}">
+      <a class="navbar-item {% if request.path == '/todos/horizons/PR' %} is-active {% endif %}" href="{% url 'todos:horizon-detail-list' 'PR' %}">
         Projects
       </a>
 
-      <a class="navbar-item" href="{% url 'todos:horizon-detail-list' 'FO' %}">
+      <a class="navbar-item {% if request.path == '/todos/horizons/FO' %} is-active {% endif %}" href="{% url 'todos:horizon-detail-list' 'FO' %}">
         Focus
       </a>
 
-      <a class="navbar-item" href="{% url 'todos:horizon-detail-list' 'GO' %}">
+      <a class="navbar-item {% if request.path == '/todos/horizons/GO' %} is-active {% endif %}" href="{% url 'todos:horizon-detail-list' 'GO' %}">
         Goals
       </a>
 
-      <a class="navbar-item" href="{% url 'todos:horizon-detail-list' 'VI' %}">
+      <a class="navbar-item {% if request.path == '/todos/horizons/VI' %} is-active {% endif %}" href="{% url 'todos:horizon-detail-list' 'VI' %}">
         Vision
       </a>
 
-      <a class="navbar-item" href="{% url 'todos:horizon-detail-list' 'PU' %}">
+      <a class="navbar-item {% if request.path == '/todos/horizons/PU' %} is-active {% endif %}" href="{% url 'todos:horizon-detail-list' 'PU' %}">
         Purpose
       </a>
     </div>

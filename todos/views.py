@@ -172,6 +172,11 @@ class TodoCreateView(LoginRequiredMixin, CreateView):
             kwargs['children_label'] = None
             kwargs['initial_children'] = None
         return kwargs
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        horizon:Todo.Horizon = Todo.horizon_value_to_horizon(self.request.GET.get('horizon', 'AC'))
+        context['horizon'] = horizon
+        return context
     def get_success_url(self):
         return reverse('todos:horizon-detail-list', kwargs={"pk": self.object.horizon})
     def get_initial(self):
@@ -235,6 +240,10 @@ class TodoUpdateView(LoginRequiredMixin, UpdateView):
             kwargs['children_label'] = None
             kwargs['initial_children'] = None
         return kwargs
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['horizon'] = Todo.horizon_value_to_horizon(self.object.horizon)
+        return context
     def get_success_url(self):
         return reverse('todos:todo-view', kwargs={"pk": self.object.pk})
     def get_object(self, *args, **kwargs):

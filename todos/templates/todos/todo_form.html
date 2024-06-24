@@ -5,16 +5,16 @@
   {% if form.instance.id %}
   Update &quot;{{ form.instance.name }}&quot;
   {% else %}
-  New {{ form.instance.horizon.label }}
+  New {{ horizon.label }}
   {% endif %}
 </h1>
 
 <form method="post">
   {% for field in form %}
     {% csrf_token %}
-    {% if field.name == 'parents' and form.instance.horizon == 'PU' %}
+    {% if field.name == 'parents' and horizon.value == 'PU' %}
       &nbsp;
-    {% elif field.name == 'children' and form.instance.horizon == 'AC' %}
+    {% elif field.name == 'children' and horizon.value == 'AC' %}
       &nbsp;
     {% else %}
     <div class="field">
@@ -57,8 +57,8 @@
   {% endif %}
 
   <p class="control">
-    <a href="{% url 'todos:horizon-detail-list' form.instance.horizon %}" class="button is-text">
-      View All {{ form.instance.horizon_name }}
+    <a href="{% url 'todos:horizon-detail-list' horizon.value %}" class="button is-text">
+      View All {{ horizon.label }}
     </a>
   </p>
 </div>

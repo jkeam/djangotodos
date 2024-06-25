@@ -17,11 +17,17 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 from django.views.generic.base import TemplateView
+from django.http import JsonResponse
 
 admin.site.site_title = 'Reflect'
 admin.site.site_header = 'Reflect Admin'
 admin.site.index_title = 'Site Admin'
+
+def healthz(request):
+    return JsonResponse({'status':'healthy'})
+
 urlpatterns = [
+    path('healthz/', healthz, name='healthz'),
     path('admin/', admin.site.urls),
     path('todos/', include('todos.urls')),
     path('accounts/', include('django.contrib.auth.urls')),

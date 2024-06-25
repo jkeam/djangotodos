@@ -31,7 +31,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = env('SECRET_KEY')
 DEBUG = env('DEBUG')
 ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOSTS', '*')]
-CSRF_TRUSTED_ORIGINS = [f"https://*.{os.environ.get('ALLOWED_HOSTS', '*')}", f"http://*.{os.environ.get('ALLOWED_HOSTS', '*')}"]
+CSRF_TRUSTED_ORIGINS = [f"https://*.{os.environ.get('CSRF_TRUSTED_ORIGINS', '*')}", f"http://*.{os.environ.get('CSRF_TRUSTED_ORIGINS', '*')}"]
 
 
 

@@ -48,54 +48,34 @@ Make sure you are in the namespace/project you want this deployed to.
 1. Create database, wait until it's up before proceeding
 
     ```shell
-    oc new-app --name db \
-      --env POSTGRESQL_USER=todouser \
-      --env POSTGRESQL_PASSWORD=todopassword \
-      --env POSTGRESQL_ADMIN_PASSWORD=adminpassword \
-      --env POSTGRESQL_DATABASE=todos \
-      --image registry.redhat.io/rhel9/postgresql-15@sha256:802c7926383f9e4b31ac48dd42e5b7cce920c8ef09920abe2724e50a84fbea0b
+    oc apply -f ./openshift/db.yaml
     ```
 
 2. Create app, wait until it's up before proceeding
 
     ```shell
-    oc new-app --name djangotodos \
-      --strategy=docker \
-      --env DEBUG=True \
-      --env SECRET_KEY='django-insecure-#zd522dfd9)ce1j4*-lj%t@r$syze#@+$(9j89td=@+t8d)!k+' \
-      --env DB_NAME=todos \
-      --env DB_USER=postgres \
-      --env DB_PASSWORD=adminpassword \
-      --env DB_HOST=db \
-      --env DB_PORT=5432 \
-      https://github.com/jkeam/djangotodos.git
+    oc apply -f ./openshift/app.yaml
     ```
 
-3. Expose app
-
-    ```shell
-    oc create route edge --service=djangotodos
-    ```
-
-4. Migrate database
+3. Migrate database
 
     ```shell
     oc exec pods/$(oc get pods | grep Running  | grep djangotodos | awk '{print $1}') -- python ./manage.py migrate
     ```
 
-5. Create user for the app
+4. Create user for the app
 
     ```shell
-    oc exec pods/$(oc get pods | grep Running  | grep djangotodos | awk '{print $1}') -- bash -c "DJANGO_SUPERUSER_PASSWORD=password1 && python3 manage.py createsuperuser --username admin --email admin@example.com --noinput"
+    oc exec pods/$(oc get pods | grep Running  | grep djangotodos | awk '{print $1}') -- bash -c "DJANGO_SUPERUSER_PASSWORD=Rj2nia9S6s9i python3 manage.py createsuperuser --username admin --email admin@example.com --noinput"
     ```
 
-6. Set allowed and csrf host
+5. Set allowed and csrf host
 
     ```shell
-    oc set env deployments/djangotodos ALLOWED_HOSTS=$(oc get routes | grep djangotodos | awk '{print $2}')
+    oc set env deployments/djangotodos CSRF_TRUSTED_ORIGINS=$(oc get routes | grep djangotodos | awk '{print $2}')
     ```
 
-7. Add annotations and labels
+6. Add annotations and labels
 
     ```shell
     # labels
@@ -113,7 +93,7 @@ Make sure you are in the namespace/project you want this deployed to.
     oc annotate deployments/djangotodos app.openshift.io/vcs-ref='main'
     ```
 
-8. Open URL to app
+7. Open URL to app
 
     ```shell
     echo "https://$(oc get routes/djangotodos -o jsonpath='{.spec.host}')"

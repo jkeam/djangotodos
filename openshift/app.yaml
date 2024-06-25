@@ -1,0 +1,103 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: djangotodos
+  labels:
+    app: djangotodos
+spec:
+  selector:
+    matchLabels:
+      app: djangotodos
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: djangotodos
+    spec:
+      containers:
+      - name: djangotodos
+        image: quay.io/jkeam/djangotodos@sha256:74f70f1561c18abaec86a18b627905e0cd7189a6bfdb68347bf92a45bf7a3327
+        env:
+        - name: PYTHONDONTWRITEBYTECODE
+          value: "1"
+        - name: DEBUG
+          value: "True"
+        - name: SECRET_KEY
+          value: "django-insecure-#zd522dfd9)ce1j4*-lj%t@r$syze#@+$(9j89td=@+t8d)!k+"
+        - name: DB_NAME
+          value: "todos"
+        - name: DB_USER
+          value: "postgres"
+        - name: DB_PASSWORD
+          value: "adminpassword"
+        - name: DB_HOST
+          value: "db"
+        - name: DB_PORT
+          value: "5432"
+        - name: ALLOWED_HOSTS
+          value: "*"
+        - name: CSRF_TRUSTED_ORIGINS
+          value: "*"
+        ports:
+        - containerPort: 8000
+          name: theport
+        command: ["/bin/sh"]
+        args: ["-c", "python ./manage.py runserver 0.0.0.0:8000"]
+        startupProbe:
+          httpGet:
+            path: /healthz
+            port: 8000
+            httpHeaders:
+            - name: Accept
+              value: application/json
+          initialDelaySeconds: 3
+          periodSeconds: 3
+          failureThreshold: 10
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8000
+            httpHeaders:
+            - name: Accept
+              value: application/json
+          initialDelaySeconds: 3
+          periodSeconds: 3
+          failureThreshold: 10
+      restartPolicy: Always
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: djangotodos
+  labels:
+    app: djangotodos
+spec:
+  ports:
+    - name: port8000
+      port: 8000
+      targetPort: 8000
+  selector:
+    app: djangotodos
+  type: ClusterIP
+
+---
+
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: djangotodos
+  labels:
+    app: djangotodos
+spec:
+  path: /
+  to:
+    kind: Service
+    name: djangotodos
+    weight: 100
+  port:
+    targetPort: port8000
+  tls:
+    termination: edge

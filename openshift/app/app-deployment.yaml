@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: djangotodos
-        image: quay.io/jkeam/djangotodos@sha256:74f70f1561c18abaec86a18b627905e0cd7189a6bfdb68347bf92a45bf7a3327
+        image: quay.io/jkeam/djangotodos
         env:
         - name: PYTHONDONTWRITEBYTECODE
           value: "1"
@@ -61,43 +61,17 @@ spec:
             httpHeaders:
             - name: Accept
               value: application/json
+          initialDelaySeconds: 2
+          periodSeconds: 2
+          failureThreshold: 10
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8000
+            httpHeaders:
+            - name: Accept
+              value: application/json
           initialDelaySeconds: 3
           periodSeconds: 3
           failureThreshold: 10
       restartPolicy: Always
-
----
-
-apiVersion: v1
-kind: Service
-metadata:
-  name: djangotodos
-  labels:
-    app: djangotodos
-spec:
-  ports:
-    - name: port8000
-      port: 8000
-      targetPort: 8000
-  selector:
-    app: djangotodos
-  type: ClusterIP
-
----
-
-apiVersion: route.openshift.io/v1
-kind: Route
-metadata:
-  name: djangotodos
-  labels:
-    app: djangotodos
-spec:
-  path: /
-  to:
-    kind: Service
-    name: djangotodos
-    weight: 100
-  port:
-    targetPort: port8000
-  tls:
-    termination: edge

@@ -45,37 +45,32 @@ echo "https://$(oc get $(oc get routes -o name | grep adminer) -o jsonpath={.spe
 This is how to deploy and run the app in OpenShift.
 Make sure you are in the namespace/project you want this deployed to.
 
-1. Create database, wait until it's up before proceeding
+1. Use Kustomize to create the app
 
     ```shell
-    oc apply -f ./openshift/db.yaml
+    oc apply -k ./openshift
+    # wait for everything to come up
     ```
 
-2. Create app, wait until it's up before proceeding
-
-    ```shell
-    oc apply -f ./openshift/app.yaml
-    ```
-
-3. Migrate database
+2. Migrate database
 
     ```shell
     oc exec pods/$(oc get pods | grep Running  | grep djangotodos | awk '{print $1}') -- python ./manage.py migrate
     ```
 
-4. Create user for the app
+3. Create user for the app
 
     ```shell
     oc exec pods/$(oc get pods | grep Running  | grep djangotodos | awk '{print $1}') -- bash -c "DJANGO_SUPERUSER_PASSWORD=Rj2nia9S6s9i python3 manage.py createsuperuser --username admin --email admin@example.com --noinput"
     ```
 
-5. Set allowed and csrf host
+4. Set allowed and csrf host
 
     ```shell
     oc set env deployments/djangotodos CSRF_TRUSTED_ORIGINS=$(oc get routes | grep djangotodos | awk '{print $2}')
     ```
 
-6. Add annotations and labels
+5. Add annotations and labels
 
     ```shell
     # labels
@@ -93,10 +88,11 @@ Make sure you are in the namespace/project you want this deployed to.
     oc annotate deployments/djangotodos app.openshift.io/vcs-ref='main'
     ```
 
-7. Open URL to app
+6. Open URL to app
 
     ```shell
     echo "https://$(oc get routes/djangotodos -o jsonpath='{.spec.host}')"
+    # login with username: admin and password: Rj2nia9S6s9i
     ```
 
 ## OpenShift Pipeline
@@ -127,12 +123,11 @@ oc new-app --name db \
       --namespace jkeam-dev
 
 # pipeline secret, update values with real
-oc create -f ./pipeline/email-server-secret.yaml
+# openshift/pipeline/email-server-secret.yaml
 
 # pipeline
-oc create -f ./pipeline/django-test-task.yaml -n jkeam-pipeline
-oc create -f ./pipeline/pipeline.yaml -n jkeam-pipeline
-oc create -f ./pipeline/pipeline-run.yaml -n jkeam-pipeline
+oc project todo
+oc apply -k ./openshift/pipeline
 ```
 
 ## Local

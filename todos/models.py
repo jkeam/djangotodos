@@ -111,6 +111,7 @@ class Todo(models.Model):
     def write_to_csv(self, csv_writer, write_header:bool = False):
         if write_header:
             csv_writer.writerow([
+                "Id",
                 "Horizon",
                 "Name",
                 "Description",
@@ -122,6 +123,7 @@ class Todo(models.Model):
                 "Children Ids"
             ])
         csv_writer.writerow([
+            self.id,
             self.horizon,
             self.name,
             self.description,

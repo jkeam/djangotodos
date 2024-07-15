@@ -82,9 +82,11 @@ class TodoDetailViewTests(TestCase):
         """
         self.assertEqual(Todo.objects.all().first().description, '')
         url = reverse("todos:todo-update", args=(self.todo.id,))
-        redirect_url = reverse("todos:horizon-detail-list", kwargs={"pk": Todo.objects.all().first().horizon})
-        response = self.client.post(url, {'name': self.todo.name, 'description': 'some desc'})
-        self.assertEqual(Todo.objects.all().first().description, 'some desc')
+        redirect_url = reverse("todos:todo-view", kwargs={"pk": self.todo.id})
+        self.assertEqual(self.todo.description, '')
+        response = self.client.post(url, {'horizon': self.todo.horizon, 'name': self.todo.name, 'description': 'some desc'})
+        todo = Todo.objects.get(id=self.todo.id)
+        self.assertEqual(todo.description, 'some desc')
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, redirect_url)
 
@@ -126,12 +128,10 @@ class TodoToggleViewTests(TestCase):
         """
         self.assertEqual(Todo.objects.all().count(), 1)
         self.assertEqual(Todo.objects.all().first().completed, False)
-        url = reverse("todos:todo-toggle", args=(self.todo.id,))
-        redirect_url = reverse("todos:horizon-detail-list", kwargs={"pk": Todo.objects.all().first().horizon})
+        url = reverse("todos:todo-toggle-partial", args=(self.todo.id,))
         response = self.client.post(url)
         self.assertEqual(Todo.objects.all().first().completed, True)
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, redirect_url)
+        self.assertEqual(response.status_code, 200)
 
 class TodoOtherUserTodoViewTests(TestCase):
     def setUp(self):

@@ -10,7 +10,7 @@ spec:
     - name: APP_SOURCE_GIT
       value: https://github.com/jkeam/djangotodos
     - name: DEV_PROJECT
-      value: jkeam-dev
+      value: todo-dev
     - name: FROM_EMAIL
       value: build@example.com
     - name: TO_EMAILS

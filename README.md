@@ -99,10 +99,10 @@ Make sure you are in the namespace/project you want this deployed to.
 
 ```shell
 # setup
-oc new-project jkeam-pipeline
-oc new-project jkeam-dev
-oc policy add-role-to-user edit system:serviceaccount:jkeam-pipeline:pipeline -n jkeam-dev
-oc policy add-role-to-user system:image-puller system:serviceaccount:jkeam-dev:default -n jkeam-pipeline
+oc new-project todo-pipeline
+oc new-project todo-dev
+oc policy add-role-to-user edit system:serviceaccount:todo-pipeline:pipeline -n todo-dev
+oc policy add-role-to-user system:image-puller system:serviceaccount:todo-dev:default -n todo-pipeline
 
 # db for pipeline
 oc new-app --name db \
@@ -111,7 +111,7 @@ oc new-app --name db \
       --env POSTGRESQL_ADMIN_PASSWORD=adminpassword \
       --env POSTGRESQL_DATABASE=todos \
       --image registry.redhat.io/rhel9/postgresql-15@sha256:802c7926383f9e4b31ac48dd42e5b7cce920c8ef09920abe2724e50a84fbea0b \
-      --namespace jkeam-pipeline
+      --namespace todo-pipeline
 
 # db for dev
 oc new-app --name db \
@@ -120,13 +120,13 @@ oc new-app --name db \
       --env POSTGRESQL_ADMIN_PASSWORD=adminpassword \
       --env POSTGRESQL_DATABASE=todos \
       --image registry.redhat.io/rhel9/postgresql-15@sha256:802c7926383f9e4b31ac48dd42e5b7cce920c8ef09920abe2724e50a84fbea0b \
-      --namespace jkeam-dev
+      --namespace todo-dev
 
 # pipeline secret, update values with real
 # openshift/pipeline/email-server-secret.yaml
 
 # pipeline
-oc project todo
+oc project todo-pipeline
 oc apply -k ./openshift/pipeline
 ```
 

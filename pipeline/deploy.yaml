@@ -37,11 +37,43 @@ spec:
             value: "5432"
           - name: ALLOWED_HOSTS
             value: "*"
+          - name: CSRF_TRUSTED_ORIGINS
+            value: "*"
           ports:
           - containerPort: 8000
             name: theport
           command: ["/bin/sh"]
           args: ["-c", "python ./manage.py migrate && python ./manage.py runserver 0.0.0.0:8000"]
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+              httpHeaders:
+              - name: Accept
+                value: application/json
+            initialDelaySeconds: 3
+            periodSeconds: 3
+            failureThreshold: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+              httpHeaders:
+              - name: Accept
+                value: application/json
+            initialDelaySeconds: 2
+            periodSeconds: 2
+            failureThreshold: 10
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+              httpHeaders:
+              - name: Accept
+                value: application/json
+            initialDelaySeconds: 3
+            periodSeconds: 3
+            failureThreshold: 10
       restartPolicy: Always
 
 ---

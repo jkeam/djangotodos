@@ -1,0 +1,20 @@
+<div class="column">
+    <article class="panel is-link">
+        <p class="panel-heading">{{ title }}</p>
+        {% for todo in todos %}
+        <a class="panel-block p-3" href="{% url 'todos:todo-update' todo.id %}" >
+            <div class="content">
+                <div class="is-size-4">
+                    {{ todo.name }}
+                </div>
+                <div class="is-size-6">
+                    {{ todo.due_date }}
+                </div>
+                <p class="">
+                    {{ todo.description|truncatechars:32 }}
+                </p>
+            </div>
+        </a>
+        {% endfor %}
+    </article>
+</div>

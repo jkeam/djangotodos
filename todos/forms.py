@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from .models import Todo, TodoComment
 from django.utils.translation import gettext_lazy as _
 Horizon = Todo.Horizon
+Progress = Todo.Progress
 
 class ImportTodosForm(forms.Form):
     file = forms.FileField(
@@ -66,6 +67,14 @@ class TodoForm(forms.ModelForm):
         widget=forms.HiddenInput()
     )
 
+    progress = forms.ChoiceField(
+        choices=Progress.choices,
+        required=True,
+        widget=forms.Select()
+    )
+
+    completed = forms.CheckboxInput()
+
     children = CustomChildren(
         queryset=None,
         required=False,
@@ -80,7 +89,7 @@ class TodoForm(forms.ModelForm):
 
     class Meta:
         model = Todo
-        fields = ['name', 'description', 'due_date', 'horizon', 'children', 'parents']
+        fields = ['name', 'description', 'progress', 'completed', 'due_date', 'horizon', 'children', 'parents']
 
 class PasswordForm(PasswordChangeForm):
     old_password = forms.CharField(

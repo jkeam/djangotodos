@@ -10,19 +10,31 @@
   Create
 </a>
 
-{% if hidden == 'true' %}
-<a class="button is-text mb-5" href="?order_by={{order_by}}&hidden=false&sort={{sort}}">
-  Hide Hidden
+{% if view == 'kanban' %}
+<a class="button is-text mb-5" href="?order_by={{order_by}}&hidden=true&sort={{sort}}">
+  List View
 </a>
 {% else %}
-<a class="button is-text mb-5" href="?order_by={{order_by}}&hidden=true&sort={{sort}}">
-  Show Hidden
-</a>
+  {% if hidden == 'true' %}
+  <a class="button is-text mb-5" href="?order_by={{order_by}}&hidden=false&sort={{sort}}">
+    Hide Done
+  </a>
+  {% else %}
+  <a class="button is-text mb-5" href="?order_by={{order_by}}&hidden=true&sort={{sort}}">
+    Show Done
+  </a>
+  {% endif %}
+  <a class="button is-text mb-5" href="?order_by={{order_by}}&hidden=true&sort={{sort}}&view=kanban">
+    Kanban View
+  </a>
 {% endif %}
 
-
 <div id="todos">
-  {% include "todos/todo_horizon_detail_partial.html" with page_obj=page_obj hidden=hidden order_by=order_by sort=sort %}
+  {% if view == 'kanban' %}
+    {% include "todos/todo_horizon_detail_kanban_partial.html" with page_obj=page_obj todos_in_progress=todos_in_progress todos_planned=todos_planned todos_backlog=todos_backlog todos_done=todos_done %}
+  {% else %}
+    {% include "todos/todo_horizon_detail_partial.html" with page_obj=page_obj hidden=hidden order_by=order_by sort=sort %}
+  {% endif %}
 </div>
 
 {% endblock %}

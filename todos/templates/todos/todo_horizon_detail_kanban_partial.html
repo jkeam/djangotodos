@@ -1,0 +1,6 @@
+<div class="columns">
+    {% include "todos/todo_horizon_detail_kanban_column_partial.html" with todos=todos_backlog title="Backlog" %}
+    {% include "todos/todo_horizon_detail_kanban_column_partial.html" with todos=todos_planned title="Planned" %}
+    {% include "todos/todo_horizon_detail_kanban_column_partial.html" with todos=todos_in_progress title="In Progress" %}
+    {% include "todos/todo_horizon_detail_kanban_column_partial.html" with todos=todos_done title="Done" %}
+</div>

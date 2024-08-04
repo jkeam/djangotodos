@@ -140,7 +140,7 @@ class HorizonDetailListView(LoginRequiredMixin, ListView):
             sort = 'asc'
         if sort == 'desc':
             order_by = f"-{order_by}"
-        if self.request.GET.get('hidden') == 'true':
+        if self.request.GET.get('hidden') == 'true' or self.request.GET.get('view') == 'kanban':
             return Todo.objects.filter(
                     owner=self.request.user,
                     horizon=horizon).order_by(order_by)
@@ -159,6 +159,13 @@ class HorizonDetailListView(LoginRequiredMixin, ListView):
         context["horizon_name"] = Todo.horizon_value_to_name(horizon)
         context["order_by"] = self.request.GET.get('order_by')
         context["sort"] = self.request.GET.get('sort')
+        context["view"] = self.request.GET.get('view')
+        todos = list(context['page_obj'].object_list)
+        not_done_todos = list(filter(lambda x: not x.completed, todos))
+        context['todos_done'] = list(filter(lambda x: x.completed, todos))
+        context['todos_backlog'] = list(filter(lambda x: x.is_backlog(), not_done_todos))
+        context['todos_planned'] = list(filter(lambda x: x.is_planned(), not_done_todos))
+        context['todos_in_progress'] = list(filter(lambda x: x.is_in_progress(), not_done_todos))
         return context
 
 class ChangePasswordView(LoginRequiredMixin, SuccessMessageMixin, PasswordChangeView):

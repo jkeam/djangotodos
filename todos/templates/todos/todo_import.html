@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1 class="title">
+  Import
+</h1>
+
+<h2 class="subtitle">
+  Upload CSV from Export
+</h2>
+
+<p class="has-text-danger">
+  Warning: This is a destructive process and will completely replace all Todos.
+</p>
+
+<form method="post" enctype="multipart/form-data" x-data="{
+  filename: '',
+  afterFilepicked($event) {
+    document.getElementById('filename').classList.remove('hidden');
+    this.filename = $event.target.files[0].name;
+  }
+}">
+  {% for field in form %}
+    {% csrf_token %}
+    <div class="field">
+      {% if field.name == 'file' %}
+        <div class="file is-boxed">
+          <label class="file-label">
+            {{ field }}
+            <span class="file-cta">
+              <span class="file-icon">
+                <i class="fas fa-upload"></i>
+              </span>
+              <span class="file-label"> Choose a file… </span>
+            </span>
+            <span class="file-name hidden" x-text="filename" id="filename"></span>
+          </label>
+        </div>
+      {% else %}
+        <label class="label" for="{{ field.auto_id }}">{{ field.label }}</label>
+        <div class="control">
+          {{ field }}
+        </div>
+      {% endif %}
+      {% if field.errors %}
+        <small class="error has-text-danger">{{ field.errors|striptags }}</small>
+      {% endif %}
+    </div>
+  {% endfor %}
+  <button type="submit" class="button is-primary">Upload</button>
+</form>
+
+{% endblock %}

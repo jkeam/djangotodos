@@ -27,4 +27,5 @@ urlpatterns = [
     path('<int:todo_id>/comments/<int:pk>/update/', views.TodoCommentUpdateView.as_view(), name='todo-comments-update'),
     # export
     path('export/', views.export_view, name='todo-export'),
+    path('import/', views.import_view, name='todo-import'),
 ]

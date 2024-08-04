@@ -1,5 +1,5 @@
 from .models import Todo, TodoComment
-from .forms import TodoForm, UserForm, PasswordForm, TodoCommentForm
+from .forms import TodoForm, UserForm, PasswordForm, TodoCommentForm, ImportTodosForm
 from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.urls import reverse_lazy, reverse
 from django.forms.utils import ErrorList
@@ -10,6 +10,7 @@ from django.contrib.auth.views import PasswordChangeView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.models import User
 from django.shortcuts import render
+from io import StringIO
 import csv
 
 # Helper methods
@@ -45,6 +46,38 @@ def update_relationship(form, existing, chosen, owner, remove_association, add_a
             todo.save()
 
 # Views
+def import_view(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect("/")
+    if request.method == 'POST':
+        form = ImportTodosForm(request.POST, request.FILES)
+        if form.is_valid():
+            file = request.FILES["file"]
+            if file.size > 2500000:  # 2.5MB
+                return HttpResponseBadRequest()
+            reader = csv.DictReader(StringIO(file.read().decode('utf-8')))
+            todos = {}
+            todo_children_ids = {}
+            for row in reader:
+                id = int(row['Id'])
+                todo = Todo().read_from_csv(row)
+                todo.owner = request.user
+                todos[id] = todo
+                children_ids = list(map(lambda x: int(x.strip()) if x else None, row['Children Ids'].replace('[', '').replace(']', '').split(',')))
+                todo_children_ids[id] = children_ids
+
+            Todo.objects.all().delete()
+            Todo.objects.bulk_create(todos.values())
+            for id, todo in todos.items():
+                for child_id in todo_children_ids[id]:
+                    if child_id is not None:
+                        todo.children.add(todos[child_id])
+                todo.save()
+            return HttpResponseRedirect(reverse('todos:todo-tree'))
+    else:
+        form = ImportTodosForm()
+    return render(request, "todos/todo_import.html", {"form": form})
+
 def export_view(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect("/")

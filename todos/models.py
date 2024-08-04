@@ -17,7 +17,7 @@ class Todo(models.Model):
         choices=Horizon,
         default=Horizon.ACTIONS,
     )
-    name = models.CharField(max_length=32, null=False, blank=False)
+    name = models.CharField(max_length=128, null=False, blank=False)
     description = models.TextField(default='', max_length=512, null=False, blank=True)
     completed = models.BooleanField(default=False, null=False)
     blocked = models.BooleanField(default=False, null=False)
@@ -135,6 +135,19 @@ class Todo(models.Model):
             [child.pk for child in self.children.all()],
         ])
         return csv_writer
+
+    def read_from_csv(self, input):
+        self.horizon = input['Horizon']
+        self.name = input['Name']
+        self.description = input['Description']
+        input_due_date = input['Due Date'].strip()
+        if input_due_date:
+            self.due_date = input_due_date
+        self.completed = input['Completed']
+        self.blocked = input['Blocked']
+        self.created_at = input['Created At']
+        self.updated_at = input['Updated At']
+        return self
 
 class TodoComment(models.Model):
     body = models.TextField(default='', max_length=512, null=False, blank=False)

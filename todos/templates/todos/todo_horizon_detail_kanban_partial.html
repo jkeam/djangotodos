@@ -1,6 +1,6 @@
-<div class="columns">
-    {% include "todos/todo_horizon_detail_kanban_column_partial.html" with todos=todos_backlog title="Backlog" %}
-    {% include "todos/todo_horizon_detail_kanban_column_partial.html" with todos=todos_planned title="Planned" %}
-    {% include "todos/todo_horizon_detail_kanban_column_partial.html" with todos=todos_in_progress title="In Progress" %}
-    {% include "todos/todo_horizon_detail_kanban_column_partial.html" with todos=todos_done title="Done" %}
+<div class="columns" x-data="{source: '', destination: ''}">
+    {% include "todos/todo_horizon_detail_kanban_column_partial.html" with todos=todos_backlog title="Backlog" column_code="BA" %}
+    {% include "todos/todo_horizon_detail_kanban_column_partial.html" with todos=todos_planned title="Planned" column_code="PL" %}
+    {% include "todos/todo_horizon_detail_kanban_column_partial.html" with todos=todos_in_progress title="In Progress" column_code="IP" %}
+    {% include "todos/todo_horizon_detail_kanban_column_partial.html" with todos=todos_done title="Done" column_code="DO" %}
 </div>

@@ -174,12 +174,16 @@ class Todo(models.Model):
         self.horizon = input['Horizon']
         self.name = input['Name']
         self.description = input['Description']
-        input_due_date = input['Due Date'].strip()
+        input_due_date = input['Due Date']
         if input_due_date:
-            self.due_date = input_due_date
+            self.due_date = input_due_date.strip()
         self.completed = input['Completed']
         self.blocked = input['Blocked']
-        self.progress = input['Progress']
+        input_progress = input['Progress']
+        if input_progress:
+            self.progress = input_progress
+        else:
+            self.progress = Todo.Progress.BACKLOG
         self.created_at = input['Created At']
         self.updated_at = input['Updated At']
         return self

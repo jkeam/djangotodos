@@ -1,16 +1,36 @@
-<div class="column">
-    <article class="panel is-link">
-        <p class="panel-heading">{{ title }}</p>
+<div
+    data-column="{{ column_code }}"
+    class="column"
+    x-data="{adding: false}"
+    :class="{ 'kanban-adding': adding }"
+    x-on:drop="adding=false"
+    x-on:drop.prevent="
+        destination = event.target.getAttribute('data-column');
+    "
+    x-on:dragover.prevent="adding = true"
+    x-on:dragleave.prevent="adding = false">
+    <article class="panel is-link" data-column="{{ column_code }}">
+        <p class="panel-heading" data-column="{{ column_code }}">{{ title }}</p>
         {% for todo in todos %}
-        <a class="panel-block p-3" href="{% url 'todos:todo-update' todo.id %}" >
-            <div class="content">
-                <div class="is-size-4">
+        <a
+            class="panel-block p-3"
+            href="#"
+            data-id="{{ todo.name }}"
+            data-name="{{ todo.name }}"
+            data-column="{{ column_code }}"
+            id="todo-{{ todo.id }}"
+            x-on:dragstart="
+                source = event.target.id.replace('todo-', '');
+            "
+        >
+            <div class="content" data-column="{{ column_code }}">
+                <div class="is-size-4" data-column="{{ column_code }}">
                     {{ todo.name }}
                 </div>
-                <div class="is-size-6">
+                <div class="is-size-6" data-column="{{ column_code }}">
                     {{ todo.due_date }}
                 </div>
-                <p class="">
+                <p class="" data-column="{{ column_code }}">
                     {{ todo.description|truncatechars:32 }}
                 </p>
             </div>

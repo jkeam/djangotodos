@@ -166,3 +166,8 @@
   background-position : calc(-2 * var(--radius)) 0;
 }
 /* tree end */
+
+/* kanban */
+.kanban-adding {
+  background-color: #ddd;
+}

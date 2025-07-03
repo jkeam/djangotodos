@@ -138,6 +138,23 @@ class TodoToggleViewTests(TestCase):
         self.assertEqual(Todo.objects.all().first().completed, True)
         self.assertEqual(response.status_code, 200)
 
+class TodoProgressViewTests(TestCase):
+    def setUp(self):
+        self.user = create_test_user()
+        self.client.login(username='foo', password='bar')
+        self.todo = create_todo_for_test_user('test-progress')
+
+    def test_toggle(self):
+        """
+        Toggle completion
+        """
+        self.assertEqual(Todo.objects.all().count(), 1)
+        self.assertEqual(Todo.objects.all().first().progress, 'BA')
+        url = reverse("todos:todo-progress-partial", args=(self.todo.id, 'PL'))
+        response = self.client.post(url)
+        self.assertEqual(Todo.objects.all().first().progress, 'PL')
+        self.assertEqual(response.status_code, 200)
+
 class TodoOtherUserTodoViewTests(TestCase):
     def setUp(self):
         self.user = create_test_user()

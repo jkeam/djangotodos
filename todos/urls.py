@@ -19,6 +19,7 @@ urlpatterns = [
     path('<int:pk>/update/', views.TodoUpdateView.as_view(), name='todo-update'),
     path('<int:pk>/toggle-partial/', views.todo_toggle, name='todo-toggle-partial'),
     path('<int:pk>/blocked-partial/', views.todo_blocked, name='todo-blocked-partial'),
+    path('<int:pk>/<str:progress>/progress-partial/', views.todo_progress, name='todo-progress-partial'),
     path('<int:pk>/delete/', views.TodoDeleteView.as_view(), name='todo-delete'),
     # comments
     path('<int:pk>/comments/', views.TodoComments.as_view(), name='todo-comments'),

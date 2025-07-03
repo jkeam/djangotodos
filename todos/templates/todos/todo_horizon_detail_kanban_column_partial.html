@@ -6,6 +6,11 @@
     x-on:drop="adding=false"
     x-on:drop.prevent="
         destination = event.target.getAttribute('data-column');
+        const id = event.dataTransfer.getData('text/plain');
+        url = '/todos/' + id + '/' + destination + '/progress-partial/';
+        fetch(url, {method: 'POST'}).then(function() {
+            location.reload();
+        });
     "
     x-on:dragover.prevent="adding = true"
     x-on:dragleave.prevent="adding = false">
@@ -21,6 +26,7 @@
             id="todo-{{ todo.id }}"
             x-on:dragstart="
                 source = event.target.id.replace('todo-', '');
+                event.dataTransfer.setData('text/plain', source);
             "
         >
             <div class="content" data-column="{{ column_code }}">

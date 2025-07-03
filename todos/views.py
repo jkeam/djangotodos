@@ -10,6 +10,7 @@ from django.contrib.auth.views import PasswordChangeView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.models import User
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
 from io import StringIO
 import csv
 
@@ -350,6 +351,18 @@ def todo_blocked(request, pk):
         }
         return render(request, "todos/todo_horizon_detail_row_partial.html", context)
     return HttpResponseRedirect(reverse('todos:horizon-view-list'))
+
+@csrf_exempt
+def todo_progress(request, pk, progress):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect("/")
+    if request.method == 'POST':
+        todo = Todo.objects.get(pk=pk)
+        if not todo.owner == request.user:
+            raise Http404
+        todo.progress = progress
+        todo.save()
+    return HttpResponse("Success", status=200)
 
 class TodoDeleteView(LoginRequiredMixin, DeleteView):
     model = Todo

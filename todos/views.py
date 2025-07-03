@@ -118,6 +118,8 @@ def tree_view_partial(request, pk:int):
 def goto_horizon(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect("/")
+    if APP_MODE_SIMPLE:
+        return HttpResponseRedirect(reverse('todos:horizon-detail-list', kwargs={"pk": Todo.Horizon.ACTIONS}))
     return HttpResponseRedirect(reverse('todos:horizon-view-list'))
 
 class HorizonListView(LoginRequiredMixin, ListView):

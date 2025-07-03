@@ -4,6 +4,10 @@ metadata:
   name: db
   labels:
     app: db
+    app.kubernetes.io/part-of: django-todo-app
+    app.openshift.io/runtime: postgresql
+    app.openshift.io/runtime-version: '16'
+    app.kubernetes.io/name: db
 spec:
   selector:
     matchLabels:

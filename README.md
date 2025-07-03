@@ -70,25 +70,7 @@ Make sure you are in the namespace/project you want this deployed to.
     oc set env deployments/djangotodos CSRF_TRUSTED_ORIGINS=$(oc get routes | grep djangotodos | awk '{print $2}')
     ```
 
-5. Add annotations and labels
-
-    ```shell
-    # labels
-    oc label deployments/djangotodos app.kubernetes.io/part-of=django-todo-app
-    oc label deployments/djangotodos app.openshift.io/runtime=python
-    oc label deployments/djangotodos app.openshift.io/runtime-version=3.12
-    oc label deployments/djangotodos app.kubernetes.io/name=djangotodos
-    oc label deployments/db app.kubernetes.io/part-of=django-todo-app
-    oc label deployments/db app.openshift.io/runtime=postgresql
-    oc label deployments/db app.openshift.io/runtime-version=15
-    oc label deployments/db app.kubernetes.io/name=db
-    # annotations
-    oc annotate deployments/djangotodos app.openshift.io/connects-to='[{"apiVersion":"apps/v1","kind":"Deployment","name":"db"}]'
-    oc annotate deployments/djangotodos app.openshift.io/vcs-uri='https://github.com/jkeam/djangotodos.git'
-    oc annotate deployments/djangotodos app.openshift.io/vcs-ref='main'
-    ```
-
-6. Open URL to app
+5. Open URL to app
 
     ```shell
     echo "https://$(oc get routes/djangotodos -o jsonpath='{.spec.host}')"

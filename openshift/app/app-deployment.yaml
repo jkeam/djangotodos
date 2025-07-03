@@ -4,6 +4,14 @@ metadata:
   name: djangotodos
   labels:
     app: djangotodos
+    app.kubernetes.io/part-of: django-todo-app
+    app.openshift.io/runtime: python
+    app.openshift.io/runtime-version: '3.12'
+    app.kubernetes.io/name: 'djangotodos'
+  annotations:
+    app.openshift.io/connects-to: '[{"apiVersion":"apps/v1","kind":"Deployment","name":"db"}]'
+    app.openshift.io/vcs-uri: 'https://github.com/jkeam/djangotodos.git'
+    app.openshift.io/vcs-ref: 'main'
 spec:
   selector:
     matchLabels:

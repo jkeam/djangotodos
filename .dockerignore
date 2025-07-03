@@ -139,3 +139,6 @@ GitHub.sublime-settings
 
 # Git
 .git/
+
+.DS_Store
+db-data/*

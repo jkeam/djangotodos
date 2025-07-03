@@ -50,6 +50,10 @@ Make sure you are in the namespace/project you want this deployed to.
     ```shell
     oc apply -k ./openshift
     # wait for everything to come up
+
+    # fix console link
+    ROUTE="https://$(oc get routes djangotodos -n todo -o jsonpath='{.spec.host}')"
+    oc patch consolelink djangotodos --type='merge' -p "{\"spec\":{\"href\":\"$ROUTE\"}}"
     ```
 
 2. Migrate database

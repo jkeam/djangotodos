@@ -5,7 +5,7 @@ namespace: todo
 
 images:
 - name: quay.io/jkeam/djangotodos
-  digest: sha256:74f70f1561c18abaec86a18b627905e0cd7189a6bfdb68347bf92a45bf7a3327
+  digest: sha256:49dc08df71d084d174817ce8b313fc35650ca830b9095b7fc08d68c9e3591be0
 
 resources:
   - namespace.yaml

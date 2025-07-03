@@ -27,6 +27,8 @@ spec:
       - name: djangotodos
         image: quay.io/jkeam/djangotodos
         env:
+        - name: APP_MODE
+          value: "simple"
         - name: PYTHONDONTWRITEBYTECODE
           value: "1"
         - name: DEBUG

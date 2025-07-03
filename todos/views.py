@@ -1,5 +1,6 @@
 from .models import Todo, TodoComment
 from .forms import TodoForm, UserForm, PasswordForm, TodoCommentForm, ImportTodosForm
+from django.conf import settings
 from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.urls import reverse_lazy, reverse
 from django.forms.utils import ErrorList
@@ -118,7 +119,7 @@ def tree_view_partial(request, pk:int):
 def goto_horizon(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect("/")
-    if APP_MODE_SIMPLE:
+    if settings.APP_MODE_SIMPLE:
         return HttpResponseRedirect(reverse('todos:horizon-detail-list', kwargs={"pk": Todo.Horizon.ACTIONS}))
     return HttpResponseRedirect(reverse('todos:horizon-view-list'))
 

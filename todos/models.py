@@ -87,7 +87,7 @@ class Todo(models.Model):
         ordering = ["-id"]
 
     def __str__(self):
-        return f"Todo {self.name} by {self.owner.username}"
+        return f"Todo {self.name} with description {self.description} at {self.horizon} by {self.owner.username}"
 
     def horizon_name(self) -> str:
         return Todo.horizon_value_to_name(self.horizon)

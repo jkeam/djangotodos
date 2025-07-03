@@ -138,4 +138,4 @@ GitHub.sublime-settings
 .history
 
 .DS_Store
-db-data
+db-data/*

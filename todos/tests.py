@@ -84,9 +84,14 @@ class TodoDetailViewTests(TestCase):
         url = reverse("todos:todo-update", args=(self.todo.id,))
         redirect_url = reverse("todos:todo-view", kwargs={"pk": self.todo.id})
         self.assertEqual(self.todo.description, '')
-        response = self.client.post(url, {'horizon': self.todo.horizon, 'name': self.todo.name, 'description': 'some desc'})
-        todo = Todo.objects.get(id=self.todo.id)
-        self.assertEqual(todo.description, 'some desc')
+        response = self.client.post(url, data={
+            'horizon': self.todo.horizon,
+            'name': self.todo.name,
+            'progress': self.todo.progress,
+            'description': 'some desc',
+        })
+        self.todo.refresh_from_db()
+        self.assertEqual(self.todo.description, 'some desc')
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, redirect_url)
 

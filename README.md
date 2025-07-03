@@ -110,7 +110,7 @@ oc new-app --name db \
       --env POSTGRESQL_PASSWORD=todopassword \
       --env POSTGRESQL_ADMIN_PASSWORD=adminpassword \
       --env POSTGRESQL_DATABASE=todos \
-      --image registry.redhat.io/rhel9/postgresql-15@sha256:802c7926383f9e4b31ac48dd42e5b7cce920c8ef09920abe2724e50a84fbea0b \
+      --image registry.redhat.io/rhel9/postgresql-16:9.6-1751360823 \
       --namespace todo-pipeline
 
 # db for dev
@@ -119,7 +119,7 @@ oc new-app --name db \
       --env POSTGRESQL_PASSWORD=todopassword \
       --env POSTGRESQL_ADMIN_PASSWORD=adminpassword \
       --env POSTGRESQL_DATABASE=todos \
-      --image registry.redhat.io/rhel9/postgresql-15@sha256:802c7926383f9e4b31ac48dd42e5b7cce920c8ef09920abe2724e50a84fbea0b \
+      --image registry.redhat.io/rhel9/postgresql-16:9.6-1751360823 \
       --namespace todo-dev
 
 # pipeline secret, update values with real
@@ -142,21 +142,44 @@ oc apply -k ./openshift/pipeline
 4. `cp ./.env.template ./.env`
 5. Update values in `./.env`
 
+### Database
+
+```shell
+mkdir db-data
+./start-db.sh
+```
+
 ### Application
+
 1. Migrate db
+
     ```shell
     python ./manage.py migrate
     ```
 
 2. Create superuser
+
     ```shell
     DJANGO_SUPERUSER_PASSWORD=password1 python ./manage.py createsuperuser --username admin --email admin@example.com --noinput
     ```
 
 3. Create regular users using /admin
+
     ```shell
     cat create_user.py | python ./manage.py shell
     ```
+
+4. Start app
+
+    ```shell
+    python ./manage.py runserver
+    ```
+
+### Testa
+
+```shell
+python ./manage.py test
+```
 
 ## Docs
 

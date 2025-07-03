@@ -16,6 +16,10 @@
       &nbsp;
     {% elif field.name == 'children' and horizon.value == 'AC' %}
       &nbsp;
+    {% elif field.name == 'parents' and APP_MODE_SIMPLE %}
+      &nbsp;
+    {% elif field.name == 'children' and APP_MODE_SIMPLE %}
+      &nbsp;
     {% else %}
     <div class="field">
       {% if not field.name == 'horizon' %}

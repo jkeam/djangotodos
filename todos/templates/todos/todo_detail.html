@@ -64,7 +64,7 @@
     </ul>
   </div>
   {% endif %}
-  {% if not object.horizon == 'PU' %}
+  {% if not object.horizon == 'PU' and not APP_MODE_SIMPLE %}
   <div class="block">
     <strong>Parents:</strong>
     <br />

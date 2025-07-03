@@ -18,7 +18,11 @@
     </head>
     <body>
         {% if user.is_authenticated %}
-          {% include 'navbar.html' %}
+          {% if APP_MODE_SIMPLE %}
+            {% include 'navbar_simple.html' %}
+          {% else %}
+            {% include 'navbar.html' %}
+          {% endif %}
         {% endif %}
         <div class="container is-fluid">
           <div class="section">

@@ -32,8 +32,7 @@ SECRET_KEY = env('SECRET_KEY')
 DEBUG = env('DEBUG')
 ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOSTS', '*')]
 CSRF_TRUSTED_ORIGINS = [f"https://*.{os.environ.get('CSRF_TRUSTED_ORIGINS', '*')}", f"http://*.{os.environ.get('CSRF_TRUSTED_ORIGINS', '*')}"]
-
-
+APP_MODE_SIMPLE = os.getenv('APP_MODE', 'simple') == 'simple'
 
 # Application definition
 
@@ -72,6 +71,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'djangotodos.context_processors.global_variables',
             ],
         },
     },

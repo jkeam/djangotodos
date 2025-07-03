@@ -6,9 +6,11 @@
   {{ object.name }}
 </h1>
 
+{% if not APP_MODE_SIMPLE %}
 <h2 class="subtitle">
   Horizon: {{ object.horizon_name }}
 </h2>
+{% endif %}
 
 <div class="box">
   <div class="block">

@@ -5,9 +5,11 @@
   {{ todo.name }}
 </h1>
 
+{% if not APP_MODE_SIMPLE %}
 <h2 class="subtitle">
   Horizon: {{ todo.horizon_name }}
 </h2>
+{% endif %}
 
 <div x-data="{ open: false }">
   <button x-on:click="open = ! open" class="button is-text mb-3">Add Comment</button>

@@ -3,18 +3,20 @@
     "configurations": [
       {
         "name": "Django Server",
-        "type": "python",
+        "type": "debugpy",
         "request": "launch",
         "program": "${workspaceFolder}/manage.py",
+        "python": "${workspaceFolder}/.venv/bin/python",
         "args": ["runserver", "0.0.0.0:8000"],
         "django": true,
         "justMyCode": true
       },
       {
         "name": "Run Tests",
-        "type": "python",
+        "type": "debugpy",
         "request": "launch",
         "program": "${workspaceFolder}/manage.py",
+        "python": "${workspaceFolder}/.venv/bin/python",
         "args": ["test"],
         "django": true,
         "justMyCode": true

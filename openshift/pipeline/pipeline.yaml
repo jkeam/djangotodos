@@ -133,26 +133,3 @@ spec:
         value: |
           cat pipeline/deploy.yaml | sed "s/IMAGE/image-registry.openshift-image-registry.svc:5000\/$(context.pipelineRun.namespace)\/$(params.APP_NAME)@$(tasks.build-image.results.IMAGE_DIGEST)/" > deployment.yaml
           oc apply --filename ./deployment.yaml -n $(params.DEV_PROJECT)
-  finally:
-  - name: sendmail
-    params:
-      - name: server
-        value: email-server-secret
-      - name: subject
-        value: "Build $(tasks.status) for $(context.pipelineRun.name)"
-      - name: body
-        value: "$(tasks.build-image.results.IMAGE_DIGEST)"
-        value: |
-          Status: $(tasks.status)
-          App: $(context.pipelineRun.namespace)/$(params.APP_NAME)
-          Pipeline: $(context.pipeline.name)
-          PipelineRun: $(context.pipelineRun.name)
-          PipelineRun UID: $(context.pipelineRun.uid)
-          Image Digest: $(tasks.build-image.results.IMAGE_DIGEST)
-      - name: sender
-        value: "$(params.FROM_EMAIL)"
-      - name: recipients
-        value: "$(params.TO_EMAILS)"
-    taskRef:
-      kind: Task
-      name: sendmail
